@@ -1,157 +1,10 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#define DEEPNESS 1000;
-//Compile with: gcc -o structure structure.c
-typedef struct file_list{
-    char* filename;
-    struct file_list *next_file;
-}file_list;
 
-typedef struct node
-{
-    struct node *next;
-    char* directory_name;
-    //struct file_list;
-}node;
-
-
-
-typedef struct file_system{
-    struct file_system* brother_file;
-    struct file_system* son_file;
-    struct file_system* father_file;
-    struct node* file;
-    char* directory_name;
-}file_system;
-
-
+#include "structure.h"
 
 node* head = NULL;
-
 file_system* root = NULL;
 file_system* file_pointer = NULL;
 
-//---------Linked list-----------
-void add_node(char* directory_name);
-void print_list(void);
-int lk_len(void);
-char* get_file(int index);
-int push_in(int index, char* file_name);
-int push_to_head(char* file_name);
-int delete_in(int index);
-//------------Linked list-----------
-//-----------File system------------
-void init_root(void); //Init the root of the file system.
-void mkdir(char* new_directory); // Create a directory inside a father directory.
-void cd(char* next_directory); // Get inside a child directory.
-void ls(void); // Print all the directories.
-void rmdir(char* directory); // Remove a certain directory.
-//-----------File system------------
-int main(){
-    init_root();
-    /*
-    mkdir("Hola");
-    mkdir("usr");
-    mkdir("jaja");
-    cd("jaja");
-    printf("El current nombre del archivo es %s, su padre es %s\n", file_pointer->directory_name, file_pointer->father_file->directory_name);
-    mkdir("dentro_de_jaja");
-    cd("dentro_de_jaja");
-    printf("El current nombre del archivo es %s, su padre es %s\n", file_pointer->directory_name, file_pointer->father_file->directory_name);
-    cd("..");
-    printf("El current nombre del archivo es %s, su padre es %s\n", file_pointer->directory_name, file_pointer->father_file->directory_name);
-    mkdir("jaja2");
-    cd("..");
-    cd("jaja");
-    */
-
-    /*
-    mkdir("usr");
-    cd("usr");
-    mkdir("inside_user");
-    cd("inside_user");
-    mkdir("Hola");
-    cd("Hola");
-    printf("El current nombre del archivo es %s, su padre es %s\n", file_pointer->directory_name, file_pointer->father_file->directory_name);
-
-    cd("..");
-    printf("El current nombre del archivo es %s, su padre es %s\n", file_pointer->directory_name, file_pointer->father_file->directory_name);
-    cd("..");
-    printf("El current nombre del archivo es %s, su padre es %s\n", file_pointer->directory_name, (file_pointer->father_file->directory_name!=NULL)?file_pointer->father_file->directory_name:"NULL");
-    cd("..");
-
-    */
-    mkdir("usr");
-    mkdir("lib");
-    mkdir("include");
-    cd("usr");
-    mkdir("game1");
-    mkdir("game2");
-    cd("..");
-    cd("lib");
-    mkdir("libgpioman");
-    mkdir("libmath");
-    cd("..");
-    cd("include");
-    mkdir("header1");
-    mkdir("header2");
-    cd("..");
-
-    printf("El current nombre del archivo es %s\n", file_pointer->directory_name);
-    cd("usr");
-    printf("El current nombre del archivo es %s\n", file_pointer->directory_name);
-    cd("game1");
-    printf("El current nombre del archivo es %s\n", file_pointer->directory_name);
-    cd("GTA");
-
-    cd("..");
-    cd("..");
-
-    cd("lib");
-    printf("El current nombre del archivo es %s\n", file_pointer->directory_name);
-    cd("libmath");
-    printf("El current nombre del archivo es %s\n", file_pointer->directory_name);
-    cd("Hola");
-
-    cd("..");
-    cd("..");
-
-    cd("include");
-    printf("El current nombre del archivo es %s\n", file_pointer->directory_name);
-    cd("header1");
-    printf("El current nombre del archivo es %s\n", file_pointer->directory_name);
-    cd("Vars");
-    cd("..");
-    cd("header2");
-    printf("El current nombre del archivo es %s\n", file_pointer->directory_name);
-    cd("Vars");
-    ls();
-
-    cd("..");
-    ls();
-    cd("..");
-    ls();
-    rmdir("JAJAJA");
-
-    free(root);
-    /*
-    add_node("root");
-    add_node("sub_file");
-    add_node("adios");
-    add_node("diay");
-    print_list();
-    printf("El largo de la lista es: %i\n", lk_len());
-    printf("El file obtenido es: %s\n", get_file(1));
-    push_in(3, "adiooooooos");
-    print_list();
-    printf("El largo de la lista es: %i\n", lk_len());
-    delete_in(3);
-    delete_in(0);
-    print_list();
-    free(head);*/
-}
-//----------------------File system--------------------------------------
 void init_root(void){
     root = (file_system*)malloc(sizeof(file_system));
     root->brother_file = NULL;
@@ -268,7 +121,13 @@ void rmdir(char* directory){
         }
     }
 }
-
+void free_all(void){
+    free(root);
+    free(head);
+}
+file_system* export_current_pointer(void){
+    return file_pointer;
+}
 //----------------------File system--------------------------------------
 
 //----------------------------Linked list------------------------------
