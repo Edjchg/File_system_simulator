@@ -18,6 +18,7 @@ int main(int argc, char* argv[]){
                    --> header2
     
     */
+    // After all, we delete usr, lib and include: only root is alive, everything went well.
     file_system* current_pointer; 
     init_root();
     mkdir("usr");
@@ -72,7 +73,18 @@ int main(int argc, char* argv[]){
     ls();
     cd("..");
     ls();
-    rmdir("JAJAJA");
+    rename_file("usr", "USR");
+    ls();
+    rename_file("lib", "LIB");
+    ls();
+    rename_file("varas", "cosas");
+    rmdir("USR");
+    ls();
+    rmdir("include");
+    ls();
+    cd("USR");
+    rmdir("LIB");
+    ls();
     free_all();
     return 0;
 }

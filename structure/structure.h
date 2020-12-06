@@ -38,6 +38,8 @@ void ls(void); // Print all the directories.
 void rmdir(char* directory); // Remove a certain directory.
 void free_all(void);
 file_system* export_current_pointer(void);
+void rename_file(char* actual_name, char* new_name);
+int get_len(void);
 //-----------File system------------
 
 #endif

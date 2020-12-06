@@ -104,6 +104,8 @@ void ls(void){
 }
 void rmdir(char* directory){
     file_system* temp = file_pointer->son_file;
+    int len = get_len();
+    int counter = 0;
     if (temp == NULL)
     {
         printf("\033[1;31m Can not remove inexisting directory. \033[0m \n");
@@ -112,21 +114,87 @@ void rmdir(char* directory){
         while (strcmp(temp->directory_name, directory) != 0)
         {
             temp = temp->brother_file;
+            counter++;
             if (temp == NULL)
             {
-                /*printf("\033[1;31m Can not remove inexisting directory. \033[0m \n", next_directory);
-                return;*/
-                break;
+                printf("\033[1;31m Can not remove inexisting directory. \033[0m \n");
+                return;
             }
         }
+        if (counter == 0)
+        {
+            file_pointer->son_file = file_pointer->son_file->brother_file;
+        }else if (counter == len - 1)
+        {
+            temp = file_pointer->son_file;
+            while (temp->brother_file->brother_file != NULL)
+            {
+                temp = temp->brother_file;
+            }
+            temp->brother_file = NULL;
+            
+            //temp->brother_file = NULL;
+        }else
+        {
+            temp = file_pointer->son_file;
+            int counter2 = 0;
+            while (counter2 < counter - 1)
+            {
+                counter2++;
+                temp = temp->brother_file;
+
+            }
+            temp->brother_file = temp->brother_file->brother_file;
+            
+        }
+        
+        
+        
+        
     }
 }
+
 void free_all(void){
     free(root);
     free(head);
 }
 file_system* export_current_pointer(void){
     return file_pointer;
+}
+void rename_file(char* actual_name, char* new_name){
+    file_system* temp = file_pointer->son_file;
+    if (temp != NULL)
+    {
+        while (strcmp(temp->directory_name, actual_name) != 0)
+        {
+            temp = temp->brother_file;
+            if (temp == NULL)
+            {
+                printf("\033[1;31m %s to %s: Can not rename inexisting directory. \033[0m \n", actual_name, new_name);
+                return;
+            }
+            
+        }
+        temp->directory_name = new_name;
+    }
+}
+int get_len(void){
+    file_system* temp = file_pointer->son_file;
+    int counter = 0;
+
+    if (root == NULL)
+    {
+        return counter;
+    }else{
+        while (temp != NULL)
+        {
+            counter++;
+            temp = temp->brother_file;
+        }
+        return counter;
+    }
+    
+    
 }
 //----------------------File system--------------------------------------
 
