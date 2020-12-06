@@ -101,6 +101,22 @@ void ls(void){
         
     }
 //Print all files:
+    file* temp1 = file_pointer->file_;
+    if (temp1 == NULL)
+    {
+        return;
+    }else
+    {
+        while (temp1 != NULL)
+        {
+            printf("\033[0;32m %s \033[0m", temp1->file_name);
+            temp1 = temp1->next_file;
+        }
+        printf("\n");
+        
+    }
+    
+    
 }
 void rmdir(char* directory){
     file_system* temp = file_pointer->son_file;
@@ -193,8 +209,123 @@ int get_len(void){
         }
         return counter;
     }
+}
+
+void touch(char* file_name){
+    if (file_pointer->file_ == NULL)
+    {
+        file_pointer->file_ = (file*)malloc(sizeof(file));
+        file_pointer->file_->file_name = file_name;
+        file_pointer->file_->bytes = 0;
+        file_pointer->file_->owner = "owner";
+        file_pointer->file_->next_file = NULL; 
+    }else
+    {
+        file* temp = file_pointer->file_;
+        while (temp->next_file != NULL)
+        {
+            temp = temp->next_file;
+        }
+        temp->next_file = (file*)malloc(sizeof(file));
+        temp->next_file->file_name = file_name;
+        temp->next_file->bytes = 0;
+        temp->next_file->owner = "owner";
+        temp->next_file->next_file = NULL;
+        
+    }
+}
+void mv(char* old_name, char* new_name){
+    file* temp = file_pointer->file_;
+    if (temp != NULL)
+    {
+        while (strcmp(temp->file_name, old_name) != 0)
+        {
+            temp = temp->next_file;
+            if (temp == NULL)
+            {
+                printf("\033[1;31m %s to %s: Can not rename inexisting file. \033[0m \n", old_name, new_name);
+                return;
+            }
+            
+        }
+        temp->file_name = new_name;   
+    }
+}
+int get_file_list_len(void){
+    file* temp = file_pointer->file_;
+    int counter = 0;
+    while (temp != NULL)
+    {
+        counter++;
+        temp = temp->next_file;
+    }
+    return counter;
     
-    
+}
+void rm(char* file_name){
+    file* temp = file_pointer->file_;
+    int counter = 0;
+    int len = get_file_list_len();
+    if (temp == NULL)
+    {
+        printf("\033[1;31mCan not remove inexisting file. \033[0m \n");
+    }else
+    {
+        while (strcmp(temp->file_name, file_name) != 0)
+        {
+            counter++;
+            temp = temp->next_file;
+            if (temp == NULL)
+            {
+                printf("\033[1;31mCan not remove inexisting file. \033[0m \n");
+            }
+        }
+        if (counter == 0)
+        {
+            file_pointer->file_ = file_pointer->file_->next_file;
+        }else if (counter == len - 1)
+        {
+            temp = file_pointer->file_;
+            while (temp->next_file->next_file != NULL)
+            {
+                temp = temp->next_file;
+            }
+            temp->next_file = NULL;
+        }else
+        {
+            temp = file_pointer->file_;
+            int counter2 = 0;
+            while (counter2 < counter - 1)
+            {
+                counter2++;
+                temp = temp->next_file;
+            }
+            temp->next_file = temp->next_file->next_file;
+        }
+    }
+}
+void lsattr(char* file_name){
+    file* temp = file_pointer->file_;
+    if (temp == NULL)
+    {
+        printf("\033[1;31m %s: No such file or directory. \033[0m \n", file_name);
+    }else
+    {
+        while (strcmp(temp->file_name, file_name) != 0)
+        {
+            temp = temp->next_file;
+            if (temp == NULL)
+            {
+                printf("\033[1;31m %s: No such file or directory. \033[0m \n", file_name);
+                return;
+            }
+        }
+        printf("=> Name: %s\n", temp->file_name);
+        printf("=> Owner: %s\n", temp->owner);
+        printf("=> Bytes: %i\n", temp->bytes);
+        printf("=> Creation date: %s\n", temp->creation_date);
+        printf("=> Last modification date: %s\n", temp->last_mod);
+    }
 }
 //----------------------File system--------------------------------------
 

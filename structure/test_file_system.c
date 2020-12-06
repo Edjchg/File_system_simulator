@@ -85,6 +85,25 @@ int main(int argc, char* argv[]){
     cd("USR");
     rmdir("LIB");
     ls();
+    //From here we add files:
+    mkdir("home");
+    cd("home");
+    touch("prueba.txt");
+    touch("prueba2.txt");
+    mkdir("dentro_de_home");
+    ls();
+    cd("dentro_de_home");
+    touch("prueba1.txt");
+    touch("prueba100.txt");
+    mkdir("hola");
+    ls();
+    mv("prueba1.txt", "varas.txt");
+    touch("a.txt");
+    touch("b.txt");
+    ls();
+    rm("a.txt");
+    ls();
+    lsattr("varas.txt");
     free_all();
     return 0;
 }

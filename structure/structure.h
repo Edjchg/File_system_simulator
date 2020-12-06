@@ -11,11 +11,22 @@ typedef struct node
     //struct file_list;
 }node;
 
+typedef struct file
+{
+    struct file* next_file;
+    char* file_name;
+    char* owner;
+    char* creation_date;
+    char* last_mod;
+    int bytes;
+}file;
+
+
 typedef struct file_system{
     struct file_system* brother_file;
     struct file_system* son_file;
     struct file_system* father_file;
-    struct node* file;
+    struct file* file_;
     char* directory_name;
 }file_system;
 
@@ -40,6 +51,15 @@ void free_all(void);
 file_system* export_current_pointer(void);
 void rename_file(char* actual_name, char* new_name);
 int get_len(void);
+/*to create a file.*/
+void touch(char* file_name); 
+/*for renaming files*/
+void mv(char* old_name, char* new_name); 
+/*for deleting files*/
+void rm(char* file_name); 
+int get_file_list_len(void);
+/*for getting the attributes*/
+void lsattr(char* file_name); 
 //-----------File system------------
 
 #endif
