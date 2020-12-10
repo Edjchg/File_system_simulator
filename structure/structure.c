@@ -4,6 +4,10 @@
 node* head = NULL;
 file_system* root = NULL;
 file_system* file_pointer = NULL;
+int level;
+int column;
+char directories[1000000000];
+
 
 void init_root(void){
     root = (file_system*)malloc(sizeof(file_system));
@@ -11,9 +15,17 @@ void init_root(void){
     root->father_file = NULL;
     root->son_file = NULL;
     root->directory_name = "root";
+    root->file_ = NULL;
     file_pointer = root;
+    //system("mkdir root");
+    //system("cd root");
+    //chdir("root");
 }
 void mkdir(char* new_directory){
+    char command[50];
+    strcpy(command, "mkdir ");
+    strcat(command, new_directory);
+    system(command);
     if (root->son_file == NULL)
     {
         root->son_file = (file_system*)malloc(sizeof(file_system));
@@ -21,6 +33,13 @@ void mkdir(char* new_directory){
         root->son_file->father_file = root;
         root->son_file->son_file = NULL;
         root->son_file->brother_file = NULL;
+        level += 1;
+        root->son_file->level = level;
+        root->son_file->brother_number = 0;
+
+        strcat(command, root->son_file->directory_name);
+        system(command);
+        printf("El nivel de %s es %i y el numero de brother es %i\n", root->son_file->directory_name, root->son_file->level, root->son_file->brother_number);
         //file_pointer = root;
     }else
     {
@@ -35,12 +54,22 @@ void mkdir(char* new_directory){
             temp->brother_file->son_file = NULL;
             temp->brother_file->father_file = temp->father_file;
             temp->brother_file->brother_file = NULL;
+            temp->brother_file->level = level;
+            temp->brother_file->brother_number = get_len() - 1;
+            strcat(command, temp->brother_file->directory_name);
+           // system(command);
+            printf("El nivel de %s es %i y el numero de brother es %i\n", temp->brother_file->directory_name, temp->brother_file->level, temp->brother_file->brother_number);
         }else{
             file_pointer->son_file = (file_system*)malloc(sizeof(file_system));
             file_pointer->son_file->directory_name = new_directory; 
             file_pointer->son_file->father_file = file_pointer;
             file_pointer->son_file->son_file = NULL;
             file_pointer->son_file->brother_file = NULL;
+            file_pointer->level = level;
+            file_pointer->brother_number = get_len() - 1;
+            strcat(command, file_pointer->son_file->directory_name);
+          //  system(command);
+            printf("El nivel de %s es %i y el numero de brother es %i\n", file_pointer->son_file->directory_name, file_pointer->level, file_pointer->brother_number);
         }
         
     }
@@ -48,7 +77,7 @@ void mkdir(char* new_directory){
 void cd(char* next_directory){
     //file_pointer = root;
     file_system* temp = file_pointer->son_file;
-
+    chdir(next_directory);
     if (strcmp(next_directory, "..") ==  0)
     {
         //printf("Se detectó un ..\n");
@@ -56,6 +85,8 @@ void cd(char* next_directory){
         {
             printf("Tiene papá ..\n");
             file_pointer = file_pointer->father_file;
+            //chdir("..");
+            level -= 1;
             //printf("%s\n", file_pointer->directory_name);
         }else{
             printf("No tiene papá ..\n");
@@ -75,6 +106,8 @@ void cd(char* next_directory){
                 }
             }
             file_pointer = temp;
+            level += 1;
+            //chdir(file_pointer->directory_name);
             //printf("%s\n", file_pointer->directory_name);
         }else
         {
@@ -98,15 +131,17 @@ void ls(void){
             temp = temp->brother_file;
         }
         printf("\n");
-        
     }
 //Print all files:
-    file* temp1 = file_pointer->file_;
-    if (temp1 == NULL)
+    
+    file* temp1;
+    
+    if (file_pointer->file_ == NULL)
     {
         return;
     }else
     {
+        temp1 = file_pointer->file_;
         while (temp1 != NULL)
         {
             printf("\033[0;32m %s \033[0m", temp1->file_name);
@@ -118,7 +153,7 @@ void ls(void){
     
     
 }
-void rmdir(char* directory){
+void rmdir_(char* directory){
     file_system* temp = file_pointer->son_file;
     int len = get_len();
     int counter = 0;
@@ -160,13 +195,8 @@ void rmdir(char* directory){
                 temp = temp->brother_file;
 
             }
-            temp->brother_file = temp->brother_file->brother_file;
-            
-        }
-        
-        
-        
-        
+            temp->brother_file = temp->brother_file->brother_file;   
+        }   
     }
 }
 
@@ -176,6 +206,9 @@ void free_all(void){
 }
 file_system* export_current_pointer(void){
     return file_pointer;
+}
+file_system* export_root(void){
+    return root;
 }
 void rename_file(char* actual_name, char* new_name){
     file_system* temp = file_pointer->son_file;
@@ -326,6 +359,127 @@ void lsattr(char* file_name){
         printf("=> Creation date: %s\n", temp->creation_date);
         printf("=> Last modification date: %s\n", temp->last_mod);
     }
+}
+void trace_file_system(void){
+    file_system* temp = root;
+    if (root != NULL)
+    {
+        printf("%s\n", root->directory_name);
+        strcpy(directories, root->directory_name);
+        strcat(directories, "\n");
+        trace_file_aux(root);
+    }
+    else
+    {
+        printf("Can not trace an empty tree\n");
+    }
+}
+
+void trace_file_aux(file_system* node){
+    //if (node->son_file != NULL)
+    if(node->son_file != NULL && node->son_file->visited != 1)
+    {
+        node = node->son_file;
+        node->visited = 1;
+        strcat(directories,"\n");
+        strcat(directories, node->directory_name);
+        printf("%s\n", node->directory_name);
+        trace_son(node);
+        /*
+        if (node->brother_file != NULL)
+        {
+            trace_file_aux(node->brother_file);
+        }*/
+        
+    } else if (node->brother_file != NULL)
+    {
+        printf(".");
+        node = node->brother_file;
+        strcat(directories, node->directory_name);
+        printf("%s\n", node->directory_name);
+        trace_file_aux(node);
+    }else if (node->father_file != NULL && node->father_file != root)
+    {
+        node = node->father_file;
+        strcat(directories, "\b");
+        trace_file_aux(node);
+    }else
+    {
+        return;
+    }
+    
+}
+void trace_son(file_system* node){
+    if (node->son_file == NULL)
+    {
+        printf(".");
+        if (node->brother_file != NULL)
+        {
+            node = node->brother_file;
+            strcat(directories, node->directory_name);
+            printf("%s\n", node->directory_name);
+            trace_son(node);
+        }else
+        {
+            node = node->father_file;
+            strcat(directories, "\b");
+            trace_file_aux(node);
+        }
+          
+    }else
+    {
+        node = node->son_file;
+        node->visited = 1;
+        strcat(directories, "\n");
+        strcat(directories, node->directory_name);
+        printf("%s\n", node->directory_name);
+        trace_son(node);
+    }
+}
+char* return_directories(void){
+    return directories;
+}
+void init_directories(void){
+    //Open the back up file for the root
+    FILE* initial_dir = fopen("output", "rb");
+    
+    //Checking if there si something wrong creating/opening the file:
+    if (initial_dir != NULL)
+    {
+        //off_t off;
+        //Getting the file lenght and determining if it es empty or not:
+        //off = lseek(root_dir->_fileno, 0, SEEK_END);
+        //lseek(root_dir->_fileno, 0, SEEK_SET);
+        int off = 56;
+        //printf("size: %ld\n", off);
+        //In case off is 0 then we have to build all the B-tree from scratch: 
+        if (off > 0)
+        {
+            //Allocating memory for the tree:
+            file_system* temp = (file_system *)malloc(sizeof(file_system));
+            //Reading the tree that is saved in root_dir:
+            fread(temp, sizeof(file_system), 1, initial_dir);
+            //Closing root_dir:
+            fclose(initial_dir);
+            //Assign the main pointer to the root:
+            root = temp;
+            file_pointer = root;
+        }else
+        {
+            init_root();
+        }  
+    }
+}
+void save_file_h(void){
+    //Open output file in binary mode:
+    FILE * file = fopen("output", "wb");
+    if (file != NULL)
+    {
+        //Saving the B-tree in disk: 
+        fwrite(root, sizeof(file_system),1, file);
+        fclose(file);
+    }
+    
 }
 //----------------------File system--------------------------------------
 
