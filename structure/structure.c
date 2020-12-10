@@ -17,9 +17,9 @@ void init_root(void){
     root->directory_name = "root";
     root->file_ = NULL;
     file_pointer = root;
-    //system("mkdir root");
-    //system("cd root");
-    //chdir("root");
+    system("mkdir root");
+    system("cd root");
+    chdir("root");
 }
 void mkdir(char* new_directory){
     char command[50];
