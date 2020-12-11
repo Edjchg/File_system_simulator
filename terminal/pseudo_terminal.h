@@ -2,6 +2,7 @@
 #define PSEUDO_TERMINAL_H
 #include <gtk/gtk.h>
 #include <string.h>
+#include "../structure/structure.h"
 
 typedef struct{
     GtkWidget *txtEntrada,*tvEditor;

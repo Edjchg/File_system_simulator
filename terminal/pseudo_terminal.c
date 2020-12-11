@@ -4,6 +4,7 @@
 #include "pseudo_terminal.h"
 
 
+
 char* return_string_helper(char* string_to_return){
     int len = strlen(string_to_return);
     char *string_r = (char *)malloc(sizeof(char)*len);
@@ -46,21 +47,25 @@ char* interpret_command(char* instruction, char* argument, char* argument2){
     {
         
         printf("Se detecto mkdir\n");
+        mkdir(argument);
         return out_put;
 
     }else if (compare_strings(instruction, "cd"))
     {
         printf("Se detecto cd\n");
+        cd(argument);
         return out_put;
 
     }else if (compare_strings(instruction, "ls"))
     {
         printf("Se detecto ls\n");
+        ls();
         return out_put;
 
     }else if (compare_strings(instruction, "rmdir"))
     {
         printf("Se detecto rmdir\n");
+        rmdir_(argument);
         return out_put;
     }else if (compare_strings(instruction, "rename_file"))
     {
