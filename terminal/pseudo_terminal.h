@@ -1,5 +1,5 @@
-#ifndef PESUDO_TERMINAL_H
-#define PESUDO_TERMINAL_H
+#ifndef PSEUDO_TERMINAL_H
+#define PSEUDO_TERMINAL_H
 #include <gtk/gtk.h>
 #include <string.h>
 
