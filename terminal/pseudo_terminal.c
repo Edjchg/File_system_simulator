@@ -55,8 +55,9 @@ char* interpret_command(char* instruction, char* argument, char* argument2){
     }else if (compare_strings(instruction, "cd"))
     {
         printf("Se detecto cd\n");
-        cd_(argument);
-        return return_string_helper(out_put);
+        //cd_(argument);
+        //return return_string_helper(out_put);
+        return cd_(argument);
 
     }else if (compare_strings(instruction, "ls"))
     {
@@ -68,13 +69,15 @@ char* interpret_command(char* instruction, char* argument, char* argument2){
     }else if (compare_strings(instruction, "rmdir"))
     {
         printf("Se detecto rmdir\n");
-        rmdir_(argument);
-        return return_string_helper(out_put);
+        //rmdir_(argument);
+        //return return_string_helper(out_put);
+        return rmdir_(argument);
     }else if (compare_strings(instruction, "rename_file"))
     {
         printf("Se detecto rename_file\n");
-        rename_file(argument, argument2);
-        return return_string_helper(out_put);
+        //rename_file(argument, argument2);
+        //return return_string_helper(out_put);
+        return rename_file(argument, argument2);
     }else if (compare_strings(instruction, "touch"))
     {
         printf("Se detecto touch\n");
@@ -83,8 +86,9 @@ char* interpret_command(char* instruction, char* argument, char* argument2){
     }else if (compare_strings(instruction, "mv"))
     {
         printf("Se detecto mv\n");
-        mv(argument, argument2);
-        return out_put;
+        //mv(argument, argument2);
+        //return out_put;
+        return mv(argument, argument2);
     }else if (compare_strings(instruction, "rm"))
     {
         printf("Se detecto rm\n");
