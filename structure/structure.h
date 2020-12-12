@@ -22,6 +22,7 @@ typedef struct file
     char* creation_date;
     char* last_mod;
     int bytes;
+    int blocks[1000];
 }file;
 
 typedef struct file_system{
@@ -48,31 +49,34 @@ int push_to_head(char* file_name);
 int delete_in(int index);
 //------------Linked list-----------
 //-----------File system------------
-void init_root(void); //Init the root of the file system.
-void mkdir(char* new_directory); // Create a directory inside a father directory.
-void cd(char* next_directory); // Get inside a child directory.
-void ls(void); // Print all the directories.
-void rmdir_(char* directory); // Remove a certain directory.
+/*Init the root of the file system.*/
+void init_root(void); 
+/*Create a directory inside a father directory.*/
+void mkdir_(char* new_directory);
+/*Get inside a child directory.*/ 
+void cd_(char* next_directory); 
+/*Print all the directories.*/
+char* ls_(void); 
+/*Remove a certain directory.*/
+void rmdir_(char* directory); 
 void free_all(void);
 file_system* export_current_pointer(void);
 file_system* export_root(void);
 void rename_file(char* actual_name, char* new_name);
 int get_len(void);
 /*to create a file.*/
-void touch(char* file_name); 
+void touch_(char* file_name); 
 /*for renaming files*/
 void mv(char* old_name, char* new_name); 
 /*for deleting files*/
-void rm(char* file_name); 
+char* rm(char* file_name); 
 int get_file_list_len(void);
 /*for getting the attributes*/
-void lsattr(char* file_name); 
+char* lsattr(char* file_name); 
 void trace_file_system(void);
 void trace_file_aux(file_system* node);
 void trace_son(file_system* node);
 char* return_directories(void);
-void init_directories(void);
-void save_file_h(void);
 //-----------File system------------
-
+int compare_strings1(char* str1, char* str2);
 #endif

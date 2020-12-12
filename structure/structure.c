@@ -10,36 +10,45 @@ char directories[1000000000];
 
 
 void init_root(void){
+    printf("Se llamó a init_root\n");
     root = (file_system*)malloc(sizeof(file_system));
+    memset(root, '0', sizeof(file_system));
     root->brother_file = NULL;
     root->father_file = NULL;
     root->son_file = NULL;
     root->directory_name = "root";
     root->file_ = NULL;
     file_pointer = root;
-    system("mkdir root");
-    system("cd root");
-    chdir("root");
+    return;
 }
-void mkdir(char* new_directory){
-    char command[50];
-    strcpy(command, "mkdir ");
-    strcat(command, new_directory);
-    system(command);
+
+void mkdir_(char* new_directory){
+    printf("Se llamo a mkdir: %s\n", new_directory);
+    int len = strlen(new_directory);
+    char* name;
+    if (len > 0)
+    {
+        name = (char *)malloc(sizeof(char)*len);
+        int index = 0;
+        while (index < len)
+        {
+            name[index] = new_directory[index];
+            index++;
+        }
+        name[index] = '\0';
+    }
     if (root->son_file == NULL)
     {
         root->son_file = (file_system*)malloc(sizeof(file_system));
-        root->son_file->directory_name = new_directory;
+        root->son_file->directory_name = name;//new_directory;
         root->son_file->father_file = root;
         root->son_file->son_file = NULL;
         root->son_file->brother_file = NULL;
+        root->son_file->file_ = NULL;
         level += 1;
         root->son_file->level = level;
         root->son_file->brother_number = 0;
-
-        strcat(command, root->son_file->directory_name);
-        system(command);
-        printf("El nivel de %s es %i y el numero de brother es %i\n", root->son_file->directory_name, root->son_file->level, root->son_file->brother_number);
+        printf("1 El nivel de %s es %i y el numero de brother es %i\n", root->son_file->directory_name, root->son_file->level, root->son_file->brother_number);
         //file_pointer = root;
     }else
     {
@@ -50,34 +59,30 @@ void mkdir(char* new_directory){
                 temp = temp->brother_file;
             }
             temp->brother_file = (file_system*)malloc(sizeof(file_system));
-            temp->brother_file->directory_name = new_directory;
+            temp->brother_file->directory_name = name;//new_directory;
             temp->brother_file->son_file = NULL;
             temp->brother_file->father_file = temp->father_file;
             temp->brother_file->brother_file = NULL;
+            temp->brother_file->file_ = NULL;
             temp->brother_file->level = level;
             temp->brother_file->brother_number = get_len() - 1;
-            strcat(command, temp->brother_file->directory_name);
-           // system(command);
-            printf("El nivel de %s es %i y el numero de brother es %i\n", temp->brother_file->directory_name, temp->brother_file->level, temp->brother_file->brother_number);
+            printf("2 El nivel de %s es %i y el numero de brother es %i\n", temp->brother_file->directory_name, temp->brother_file->level, temp->brother_file->brother_number);
         }else{
             file_pointer->son_file = (file_system*)malloc(sizeof(file_system));
-            file_pointer->son_file->directory_name = new_directory; 
+            file_pointer->son_file->directory_name = name;//new_directory; 
             file_pointer->son_file->father_file = file_pointer;
             file_pointer->son_file->son_file = NULL;
             file_pointer->son_file->brother_file = NULL;
+            file_pointer->son_file->file_ = NULL;
             file_pointer->level = level;
             file_pointer->brother_number = get_len() - 1;
-            strcat(command, file_pointer->son_file->directory_name);
-          //  system(command);
-            printf("El nivel de %s es %i y el numero de brother es %i\n", file_pointer->son_file->directory_name, file_pointer->level, file_pointer->brother_number);
+            printf("2 El nivel de %s es %i y el numero de brother es %i\n", file_pointer->son_file->directory_name, file_pointer->level, file_pointer->brother_number);
         }
         
     }
 }
-void cd(char* next_directory){
-    //file_pointer = root;
-    file_system* temp = file_pointer->son_file;
-    chdir(next_directory);
+void cd_(char* next_directory){
+    printf("Se llamó a cd\n");
     if (strcmp(next_directory, "..") ==  0)
     {
         //printf("Se detectó un ..\n");
@@ -94,10 +99,13 @@ void cd(char* next_directory){
         }
     }else{
         //printf("Se intenta entrar a otro archivo\n");
-        if (temp != NULL)
+        if (file_pointer->son_file != NULL)
         {
-            while (strcmp(temp->directory_name, next_directory) != 0)
+            file_system* temp = file_pointer->son_file;
+            //while (strcmp(temp->directory_name, next_directory) != 0)
+            while(compare_strings1(temp->directory_name, next_directory) != 1)
             {
+                printf("en cd voy por: %s\n", temp->directory_name);
                 temp = temp->brother_file;
                 if (temp == NULL)
                 {
@@ -105,52 +113,75 @@ void cd(char* next_directory){
                     return;
                 }
             }
-            file_pointer = temp;
-            level += 1;
-            //chdir(file_pointer->directory_name);
-            //printf("%s\n", file_pointer->directory_name);
+            if (temp != NULL)
+            {
+                file_pointer = temp;
+                level += 1;
+            }
         }else
         {
             printf("\033[1;31m %s: No such file or directory. \033[0m \n", next_directory);
         }  
     }
 }
-void ls(void){
+char* ls_(void){
 //Print all directories:
-    file_system* temp = file_pointer;
-    if (temp->son_file == NULL)
+    file_system* temp; //= file_pointer;
+    char result[1000];
+    memset(result, 0, 1000);
+    //if (temp->son_file == NULL)
+    strcat(result, ". ..");
+    if(file_pointer->son_file == NULL)
     {
         printf("\033[0;34m . ..\033[0m \n");
+        
     }else
     {
-        temp = temp->son_file;
+        //temp = temp->son_file;
+        temp = file_pointer->son_file;
         printf("\033[0;34m . ..\033[0m ");
         while (temp != NULL)
         {
             printf("\033[0;34m %s \033[0m", temp->directory_name);
+            //printf("%s\n", temp->directory_name);
+            int len1 = strlen(temp->directory_name);
+            printf("El tamaño del nombre es: %i\n", len1);
+            strcat(result, temp->directory_name);
+            strcat(result, " ");
             temp = temp->brother_file;
         }
         printf("\n");
     }
 //Print all files:
-    
+    //strcat(result, "\n");
     file* temp1;
     
     if (file_pointer->file_ == NULL)
     {
-        return;
+        ;
     }else
     {
         temp1 = file_pointer->file_;
         while (temp1 != NULL)
         {
             printf("\033[0;32m %s \033[0m", temp1->file_name);
+            strcat(result, temp1->file_name);
             temp1 = temp1->next_file;
         }
         printf("\n");
-        
     }
-    
+    int len = strlen(result);
+    char* result1 = (char *)malloc(sizeof(char)*len);
+    //memset(result1, 0, len);
+    int index = 0;
+    while (index < len)
+    {
+        result1[index] = result[index];
+        printf("%c\n", result1[index]);
+        index++;
+    }
+    result1[index] = '\0';
+    return result1;
     
 }
 void rmdir_(char* directory){
@@ -202,7 +233,7 @@ void rmdir_(char* directory){
 
 void free_all(void){
     free(root);
-    free(head);
+    //free(head);
 }
 file_system* export_current_pointer(void){
     return file_pointer;
@@ -211,12 +242,29 @@ file_system* export_root(void){
     return root;
 }
 void rename_file(char* actual_name, char* new_name){
+    int len = strlen(new_name);
+    char* name;
+    if (len > 0)
+    {
+        name = (char *)malloc(sizeof(char)*len);
+        int index = 0;
+        while (index < len)
+        {
+            name[index] = new_name[index];
+            index++;
+        }
+        name[index] = '\0';
+    }
+    
     file_system* temp = file_pointer->son_file;
     if (temp != NULL)
     {
-        while (strcmp(temp->directory_name, actual_name) != 0)
+        //while (strcmp(temp->directory_name, actual_name) != 0)
+        while(compare_strings1(temp->directory_name, actual_name) != 1)
         {
+            printf("Nombre del temp es: %s", temp->directory_name);
             temp = temp->brother_file;
+            
             if (temp == NULL)
             {
                 printf("\033[1;31m %s to %s: Can not rename inexisting directory. \033[0m \n", actual_name, new_name);
@@ -224,8 +272,16 @@ void rename_file(char* actual_name, char* new_name){
             }
             
         }
-        temp->directory_name = new_name;
+        printf("Nombre actual es: %s\n", temp->directory_name);
+        temp->directory_name = name;//new_name;
+        printf("Nuevo nombre es: %s\n", temp->directory_name);
+    }else
+    {
+        printf("\033[1;31m %s to %s: Can not rename inexisting directory. \033[0m \n", actual_name, new_name);
+        return;
     }
+    
+    
 }
 int get_len(void){
     file_system* temp = file_pointer->son_file;
@@ -244,14 +300,32 @@ int get_len(void){
     }
 }
 
-void touch(char* file_name){
+void touch_(char* file_name){
+    int len = strlen(file_name);
+
+    char* name;
+    if (len > 0)
+    {
+        name = (char*)malloc(sizeof(char)*len);
+        int index = 0;
+        while (index < len)
+        {
+            name[index] = file_name[index];
+            index++;
+        }
+        name[index] = '\0';
+        
+    }
+    
     if (file_pointer->file_ == NULL)
     {
         file_pointer->file_ = (file*)malloc(sizeof(file));
-        file_pointer->file_->file_name = file_name;
+        file_pointer->file_->file_name = name;//file_name;
         file_pointer->file_->bytes = 0;
         file_pointer->file_->owner = "owner";
-        file_pointer->file_->next_file = NULL; 
+        file_pointer->file_->next_file = NULL;
+        file_pointer->file_->creation_date = " ";
+        file_pointer->file_->last_mod = " "; 
     }else
     {
         file* temp = file_pointer->file_;
@@ -260,18 +334,36 @@ void touch(char* file_name){
             temp = temp->next_file;
         }
         temp->next_file = (file*)malloc(sizeof(file));
-        temp->next_file->file_name = file_name;
+        temp->next_file->file_name = name;//file_name;
         temp->next_file->bytes = 0;
         temp->next_file->owner = "owner";
+        temp->next_file->creation_date = " ";
+        temp->next_file->last_mod = " ";
         temp->next_file->next_file = NULL;
         
     }
 }
 void mv(char* old_name, char* new_name){
+    int len = strlen(new_name);
+    char* name;
+    if (len > 0)
+    {
+        name = (char*)malloc(sizeof(char)*len);
+        int index = 0;
+        while (index < len)
+        {
+            name[index] = new_name[index];
+            index++;
+        }
+        name[index] = '\0';
+    }
+    
     file* temp = file_pointer->file_;
     if (temp != NULL)
     {
+        printf("\033[1;31m %s to %s \033[0m \n", old_name, new_name);
         while (strcmp(temp->file_name, old_name) != 0)
+        //while (compare_strings1(old_name, temp->file_name) != 1)
         {
             temp = temp->next_file;
             if (temp == NULL)
@@ -279,9 +371,12 @@ void mv(char* old_name, char* new_name){
                 printf("\033[1;31m %s to %s: Can not rename inexisting file. \033[0m \n", old_name, new_name);
                 return;
             }
-            
         }
-        temp->file_name = new_name;   
+        temp->file_name = name;//new_name;   
+    }else
+    {
+        printf("\033[1;31m %s to %s: Can not rename inexisting file. \033[0m \n", old_name, new_name);
+        return;
     }
 }
 int get_file_list_len(void){
@@ -293,71 +388,164 @@ int get_file_list_len(void){
         temp = temp->next_file;
     }
     return counter;
-    
 }
-void rm(char* file_name){
+char* rm(char* file_name){
     file* temp = file_pointer->file_;
     int counter = 0;
     int len = get_file_list_len();
     if (temp == NULL)
     {
         printf("\033[1;31mCan not remove inexisting file. \033[0m \n");
+        char* out = (char*)malloc(sizeof(char)*8);
+        out[0] = 'N';
+        out[1] = 'o';
+        out[2] = ' ';
+        out[3] = 'F';
+        out[4] = 'i';
+        out[5] = 'l';
+        out[6] = 'e';
+        out[7] = '\0';
+        return out;
     }else
     {
         while (strcmp(temp->file_name, file_name) != 0)
         {
-            counter++;
+            
             temp = temp->next_file;
             if (temp == NULL)
             {
                 printf("\033[1;31mCan not remove inexisting file. \033[0m \n");
+                return;
             }
+            counter++;
         }
-        if (counter == 0)
+        if (temp != NULL)
         {
-            file_pointer->file_ = file_pointer->file_->next_file;
-        }else if (counter == len - 1)
-        {
-            temp = file_pointer->file_;
-            while (temp->next_file->next_file != NULL)
+            if (counter == 0)
             {
-                temp = temp->next_file;
+                file_pointer->file_ = file_pointer->file_->next_file;
+            }else if (counter == len - 1)
+            {
+                temp = file_pointer->file_;
+                while (temp->next_file->next_file != NULL)
+                {
+                    temp = temp->next_file;
+                }
+                temp->next_file = NULL;
+            }else
+            {
+                temp = file_pointer->file_;
+                int counter2 = 0;
+                while (counter2 < counter - 1)
+                {
+                    counter2++;
+                    temp = temp->next_file;
+                }
+                temp->next_file = temp->next_file->next_file;
             }
-            temp->next_file = NULL;
+            char* out = (char*)malloc(sizeof(char)*2);
+            out[0] = ' ';
+            out[0] = '\0';
         }else
         {
-            temp = file_pointer->file_;
-            int counter2 = 0;
-            while (counter2 < counter - 1)
-            {
-                counter2++;
-                temp = temp->next_file;
-            }
-            temp->next_file = temp->next_file->next_file;
+            char* out = (char*)malloc(sizeof(char)*8);
+            out[0] = 'N';
+            out[1] = 'o';
+            out[2] = ' ';
+            out[3] = 'F';
+            out[4] = 'i';
+            out[5] = 'l';
+            out[6] = 'e';
+            out[7] = '\0';
+            return out;
         }
+        
     }
 }
-void lsattr(char* file_name){
-    file* temp = file_pointer->file_;
-    if (temp == NULL)
+char* lsattr(char* file_name){
+
+    file* temp;// = file_pointer->file_;
+    //if (temp == NULL)
+    if(file_pointer->file_ == NULL)
     {
         printf("\033[1;31m %s: No such file or directory. \033[0m \n", file_name);
+        char* out = (char*)malloc(sizeof(char)*8);
+        out[0] = 'N';
+        out[1] = 'o';
+        out[2] = ' ';
+        out[3] = 'F';
+        out[4] = 'i';
+        out[5] = 'l';
+        out[6] = 'e';
+        out[7] = '\0';
+        return out;
+        
     }else
     {
-        while (strcmp(temp->file_name, file_name) != 0)
+        temp = file_pointer->file_;
+        //while (strcmp(file_name, temp->file_name ) != 0)
+        while(compare_strings1(file_name, temp->file_name) != 1)
         {
             temp = temp->next_file;
             if (temp == NULL)
             {
                 printf("\033[1;31m %s: No such file or directory. \033[0m \n", file_name);
-                return;
+                //return;
+                break;
             }
         }
-        printf("=> Name: %s\n", temp->file_name);
-        printf("=> Owner: %s\n", temp->owner);
-        printf("=> Bytes: %i\n", temp->bytes);
-        printf("=> Creation date: %s\n", temp->creation_date);
-        printf("=> Last modification date: %s\n", temp->last_mod);
+        if (temp != NULL)
+        {
+            printf("=> Name: %s\n", temp->file_name);
+            printf("=> Owner: %s\n", temp->owner);
+            printf("=> Bytes: %i\n", temp->bytes);
+            printf("=> Creation date: %s\n", temp->creation_date);
+            printf("=> Last modification date: %s\n", temp->last_mod);
+
+            char attrs[500];
+            strcpy(attrs, "=> Name: ");
+            strcat(attrs, temp->file_name);
+            strcat(attrs, "\n");
+            strcat(attrs, "=> Owner: ");
+            strcat(attrs, temp->owner);
+            strcat(attrs, "\n");
+            strcat(attrs, "=> Bytes: ");
+            char bytes[50];
+            sprintf(bytes, "%i", temp->bytes);
+            strcat(attrs, bytes);
+            strcat(attrs, "\n");
+            strcat(attrs, "=> Creation date: ");
+            strcat(attrs, temp->creation_date);
+            strcat(attrs, "\n");
+            strcat(attrs, "=> Last modification date: ");
+            strcat(attrs, temp->last_mod);
+
+            int len = strlen(attrs);
+            char* out = (char*)malloc(sizeof(char)*len);
+            int index = 0;
+            while (index < len)
+            {
+                out[index] = attrs[index];
+                index++;
+            }
+            out[index] = '\0';
+            return out;
+        }else
+        {
+            char* out = (char*)malloc(sizeof(char)*8);
+            out[0] = 'N';
+            out[1] = 'o';
+            out[2] = ' ';
+            out[3] = 'F';
+            out[4] = 'i';
+            out[5] = 'l';
+            out[6] = 'e';
+            out[7] = '\0';
+            return out;
+        }
+        
+        
+        
     }
 }
 void trace_file_system(void){
@@ -436,51 +624,12 @@ void trace_son(file_system* node){
         trace_son(node);
     }
 }
+
 char* return_directories(void){
     return directories;
 }
-void init_directories(void){
-    //Open the back up file for the root
-    FILE* initial_dir = fopen("output", "rb");
-    
-    //Checking if there si something wrong creating/opening the file:
-    if (initial_dir != NULL)
-    {
-        //off_t off;
-        //Getting the file lenght and determining if it es empty or not:
-        //off = lseek(root_dir->_fileno, 0, SEEK_END);
-        //lseek(root_dir->_fileno, 0, SEEK_SET);
-        int off = 56;
-        //printf("size: %ld\n", off);
-        //In case off is 0 then we have to build all the B-tree from scratch: 
-        if (off > 0)
-        {
-            //Allocating memory for the tree:
-            file_system* temp = (file_system *)malloc(sizeof(file_system));
-            //Reading the tree that is saved in root_dir:
-            fread(temp, sizeof(file_system), 1, initial_dir);
-            //Closing root_dir:
-            fclose(initial_dir);
-            //Assign the main pointer to the root:
-            root = temp;
-            file_pointer = root;
-        }else
-        {
-            init_root();
-        }  
-    }
-}
-void save_file_h(void){
-    //Open output file in binary mode:
-    FILE * file = fopen("output", "wb");
-    if (file != NULL)
-    {
-        //Saving the B-tree in disk: 
-        fwrite(root, sizeof(file_system),1, file);
-        fclose(file);
-    }
-    
-}
+
+
 //----------------------File system--------------------------------------
 
 //----------------------------Linked list------------------------------
@@ -616,3 +765,23 @@ int delete_in(int index){
     return 0;
 }
 //---------------Linked list---------------------------------
+int compare_strings1(char* str1, char* str2){
+    int len1 = strlen(str1);
+    int len2 = strlen(str2);
+    if (len1 == len2)
+    {
+        int index = 0;
+        while (index < len1)
+        {
+            if (str1[index] != str2[index])
+            {
+                return 0;
+            }
+            index++;
+        }
+        return 1;
+    }else
+    {
+        return 0;
+    }
+}
