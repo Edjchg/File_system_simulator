@@ -1,9 +1,11 @@
-//https://www.youtube.com/watch?v=RYnFJg5yjl4&list=PL1xeVkd9tTFijBKZuWi9Ozw63ZuMZAOZ1&index=71
+
+#include "pseudo_terminal.h"
+#include <stdio.h>
+#include <stddef.h>
 
 //gcc pseudo_terminal.c -o pseudo_terminal $(pkg-config --cflags --libs gtk+-3.0)
-#include "pseudo_terminal.h"
 
-
+//https://www.youtube.com/watch?v=RYnFJg5yjl4&list=PL1xeVkd9tTFijBKZuWi9Ozw63ZuMZAOZ1&index=71
 
 char* return_string_helper(char* string_to_return){
     int len = strlen(string_to_return);
@@ -39,7 +41,6 @@ int compare_strings(char* str1, char* str2){
         return 0;
     }
 }
-
 char* interpret_command(char* instruction, char* argument, char* argument2){
     printf("%s(%s, %s)\n", instruction, argument, argument2);
     char* out_put = " ";
@@ -47,46 +48,55 @@ char* interpret_command(char* instruction, char* argument, char* argument2){
     {
         
         printf("Se detecto mkdir\n");
-        mkdir(argument);
-        return out_put;
+        printf("El nombre de la carpeta es: %s\n", argument);
+        mkdir_(argument);
+        return return_string_helper(out_put);
 
     }else if (compare_strings(instruction, "cd"))
     {
         printf("Se detecto cd\n");
-        cd(argument);
-        return out_put;
+        cd_(argument);
+        return return_string_helper(out_put);
 
     }else if (compare_strings(instruction, "ls"))
     {
         printf("Se detecto ls\n");
-        ls();
-        return out_put;
+        //ls_();
+        //return return_string_helper(out_put);
+        return ls_();
 
     }else if (compare_strings(instruction, "rmdir"))
     {
         printf("Se detecto rmdir\n");
         rmdir_(argument);
-        return out_put;
+        return return_string_helper(out_put);
     }else if (compare_strings(instruction, "rename_file"))
     {
         printf("Se detecto rename_file\n");
-        return out_put;
+        rename_file(argument, argument2);
+        return return_string_helper(out_put);
     }else if (compare_strings(instruction, "touch"))
     {
         printf("Se detecto touch\n");
-        return out_put;
+        touch_(argument);
+        return return_string_helper(out_put);
     }else if (compare_strings(instruction, "mv"))
     {
         printf("Se detecto mv\n");
+        mv(argument, argument2);
         return out_put;
     }else if (compare_strings(instruction, "rm"))
     {
         printf("Se detecto rm\n");
-        return out_put;
+        //rm(argument);
+        //return out_put;
+        return rm(argument);
     }else if (compare_strings(instruction, "lsattr"))
     {
         printf("Se detecto lsattr\n");
-        return out_put;
+        //lsattr(argument);
+        //return out_put;
+        return lsattr(argument);
     }else
     {
         printf("No existe ese comando\n");
@@ -112,7 +122,7 @@ char* parse_command(gchar* command){
     int index_arg = 0;
     int index_arg2 = 0;
     int space_founded = 0;
-    while (comm[index] != 32) // while command is different of space do:
+    while (comm[index] != 32 && index < len) // while command is different of space do:
     {
         instr[index_instr] = comm[index];
         index_instr++;
@@ -147,7 +157,7 @@ char* parse_command(gchar* command){
     
     
     
-    printf("%i %i\n", index_instr, index_arg);
+    //printf("%i %i\n", index_instr, index_arg);
 
     char* interpret = interpret_command(instr, arg, arg2);
     
@@ -164,10 +174,6 @@ char* parse_command(gchar* command){
     string_r[counter] = '\0';*/
     /* --------------------------------------------------------------*/
 
-    
-    
-    
-    
     return interpret;
 }
 
@@ -180,18 +186,23 @@ static void insert_text(GtkButton *button, Widgets *wid){
     //const gchar *text;
     gchar *text;
     buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(wid->tvEditor));
-    text = gtk_entry_get_text(GTK_ENTRY(wid->txtEntrada));
+    text = (gchar *)gtk_entry_get_text(GTK_ENTRY(wid->txtEntrada));
     mark = gtk_text_buffer_get_insert(buffer);
     gtk_text_buffer_get_iter_at_mark(buffer, &iter, mark);
     strcat(text, "\n");
     //gtk_text_buffer_insert(buffer, &iter, text, -1);
     printf("%s\n", text);
     char* response = parse_command(text);
-    printf("El comando que se detectó fue: %s\n", response);
+    //printf("El comando que se detectó fue: %s\n", response);
     strcat(text, response);
     strcat(text, "\n");
     gtk_text_buffer_insert(buffer, &iter, text, -1);
     gtk_entry_set_text(GTK_ENTRY(wid->txtEntrada), "");
+    printf("%li\n", strlen(response));
+    if (strlen(response) >= 3)
+    {
+        free(response);
+    }  
 }
 
 static void get_text(GtkButton *button, Widgets *wid){
@@ -202,6 +213,9 @@ static void get_text(GtkButton *button, Widgets *wid){
     buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(wid->tvEditor));
     gtk_text_buffer_get_selection_bounds(buffer, &start, &end);
     text = gtk_text_buffer_get_text(buffer, &start, &end, FALSE);
+    //From here we can get the text written in the terminal//
+    //.
+    //.
     g_print("%s\n", text);
 }
 
@@ -244,6 +258,7 @@ int init_gtk(int argc, char* argv[]){
     gtk_widget_show_all(window);
 
     gtk_main();
+    //free(wid);
     return 0;
 }
 
