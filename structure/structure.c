@@ -81,7 +81,7 @@ void mkdir_(char* new_directory){
         
     }
 }
-void cd_(char* next_directory){
+char* cd_(char* next_directory){
     printf("Se llamó a cd\n");
     if (strcmp(next_directory, "..") ==  0)
     {
@@ -93,9 +93,11 @@ void cd_(char* next_directory){
             //chdir("..");
             level -= 1;
             //printf("%s\n", file_pointer->directory_name);
+            return return_string_helper1(" ");
         }else{
             printf("No tiene papá ..\n");
-            return;
+            //return;
+            return return_string_helper1("No father directory.");
         }
     }else{
         //printf("Se intenta entrar a otro archivo\n");
@@ -110,17 +112,19 @@ void cd_(char* next_directory){
                 if (temp == NULL)
                 {
                     printf("\033[1;31m %s: No such file or directory. \033[0m \n", next_directory);
-                    return;
+                    return return_string_helper1("No such file or directory.");
                 }
             }
             if (temp != NULL)
             {
                 file_pointer = temp;
                 level += 1;
+                return return_string_helper1(" ");
             }
         }else
         {
             printf("\033[1;31m %s: No such file or directory. \033[0m \n", next_directory);
+            return return_string_helper1("No such file or directory.");
         }  
     }
 }
@@ -184,13 +188,14 @@ char* ls_(void){
     return result1;
     
 }
-void rmdir_(char* directory){
+char* rmdir_(char* directory){
     file_system* temp = file_pointer->son_file;
     int len = get_len();
     int counter = 0;
     if (temp == NULL)
     {
         printf("\033[1;31m Can not remove inexisting directory. \033[0m \n");
+        return return_string_helper1("Can not remove inexisting directory.");
     }else
     {
         while (strcmp(temp->directory_name, directory) != 0)
@@ -200,34 +205,40 @@ void rmdir_(char* directory){
             if (temp == NULL)
             {
                 printf("\033[1;31m Can not remove inexisting directory. \033[0m \n");
-                return;
+                return return_string_helper1("Can not remove inexisting directory.");
+                
             }
         }
-        if (counter == 0)
+        if (temp != NULL)
         {
-            file_pointer->son_file = file_pointer->son_file->brother_file;
-        }else if (counter == len - 1)
-        {
-            temp = file_pointer->son_file;
-            while (temp->brother_file->brother_file != NULL)
+            if (counter == 0)
             {
-                temp = temp->brother_file;
-            }
-            temp->brother_file = NULL;
-            
-            //temp->brother_file = NULL;
-        }else
-        {
-            temp = file_pointer->son_file;
-            int counter2 = 0;
-            while (counter2 < counter - 1)
+                file_pointer->son_file = file_pointer->son_file->brother_file;
+            }else if (counter == len - 1)
             {
-                counter2++;
-                temp = temp->brother_file;
+                temp = file_pointer->son_file;
+                while (temp->brother_file->brother_file != NULL)
+                {
+                    temp = temp->brother_file;
+                }
+                temp->brother_file = NULL;
+                
+                //temp->brother_file = NULL;
+            }else
+            {
+                temp = file_pointer->son_file;
+                int counter2 = 0;
+                while (counter2 < counter - 1)
+                {
+                    counter2++;
+                    temp = temp->brother_file;
 
+                }
+                temp->brother_file = temp->brother_file->brother_file;   
             }
-            temp->brother_file = temp->brother_file->brother_file;   
-        }   
+            return return_string_helper1(" ");
+        }
+         
     }
 }
 
@@ -241,19 +252,12 @@ file_system* export_current_pointer(void){
 file_system* export_root(void){
     return root;
 }
-void rename_file(char* actual_name, char* new_name){
+char* rename_file(char* actual_name, char* new_name){
     int len = strlen(new_name);
     char* name;
     if (len > 0)
     {
-        name = (char *)malloc(sizeof(char)*len);
-        int index = 0;
-        while (index < len)
-        {
-            name[index] = new_name[index];
-            index++;
-        }
-        name[index] = '\0';
+        name = return_string_helper1(new_name);
     }
     
     file_system* temp = file_pointer->son_file;
@@ -268,17 +272,16 @@ void rename_file(char* actual_name, char* new_name){
             if (temp == NULL)
             {
                 printf("\033[1;31m %s to %s: Can not rename inexisting directory. \033[0m \n", actual_name, new_name);
-                return;
+                return return_string_helper1("Can not rename inexisting directory.");
             }
             
         }
-        printf("Nombre actual es: %s\n", temp->directory_name);
         temp->directory_name = name;//new_name;
-        printf("Nuevo nombre es: %s\n", temp->directory_name);
+        return return_string_helper1(" ");
     }else
     {
         printf("\033[1;31m %s to %s: Can not rename inexisting directory. \033[0m \n", actual_name, new_name);
-        return;
+        return return_string_helper1("Can not rename inexisting directory.");
     }
     
     
@@ -343,19 +346,12 @@ void touch_(char* file_name){
         
     }
 }
-void mv(char* old_name, char* new_name){
+char* mv(char* old_name, char* new_name){
     int len = strlen(new_name);
     char* name;
     if (len > 0)
     {
-        name = (char*)malloc(sizeof(char)*len);
-        int index = 0;
-        while (index < len)
-        {
-            name[index] = new_name[index];
-            index++;
-        }
-        name[index] = '\0';
+        name = return_string_helper1(new_name);
     }
     
     file* temp = file_pointer->file_;
@@ -369,14 +365,15 @@ void mv(char* old_name, char* new_name){
             if (temp == NULL)
             {
                 printf("\033[1;31m %s to %s: Can not rename inexisting file. \033[0m \n", old_name, new_name);
-                return;
+                return return_string_helper1("Can not rename inexisting file.");
             }
         }
-        temp->file_name = name;//new_name;   
+        temp->file_name = name;//new_name; 
+        return return_string_helper1(" ");  
     }else
     {
         printf("\033[1;31m %s to %s: Can not rename inexisting file. \033[0m \n", old_name, new_name);
-        return;
+        return return_string_helper1("Can not rename inexisting file.");
     }
 }
 int get_file_list_len(void){
@@ -396,16 +393,7 @@ char* rm(char* file_name){
     if (temp == NULL)
     {
         printf("\033[1;31mCan not remove inexisting file. \033[0m \n");
-        char* out = (char*)malloc(sizeof(char)*8);
-        out[0] = 'N';
-        out[1] = 'o';
-        out[2] = ' ';
-        out[3] = 'F';
-        out[4] = 'i';
-        out[5] = 'l';
-        out[6] = 'e';
-        out[7] = '\0';
-        return out;
+        return return_string_helper1("Can not remove inexisting file.");
     }else
     {
         while (strcmp(temp->file_name, file_name) != 0)
@@ -415,7 +403,7 @@ char* rm(char* file_name){
             if (temp == NULL)
             {
                 printf("\033[1;31mCan not remove inexisting file. \033[0m \n");
-                return;
+                return return_string_helper1("Can not remove inexisting file.");
             }
             counter++;
         }
@@ -443,21 +431,10 @@ char* rm(char* file_name){
                 }
                 temp->next_file = temp->next_file->next_file;
             }
-            char* out = (char*)malloc(sizeof(char)*2);
-            out[0] = ' ';
-            out[0] = '\0';
+            return return_string_helper1(" ");
         }else
         {
-            char* out = (char*)malloc(sizeof(char)*8);
-            out[0] = 'N';
-            out[1] = 'o';
-            out[2] = ' ';
-            out[3] = 'F';
-            out[4] = 'i';
-            out[5] = 'l';
-            out[6] = 'e';
-            out[7] = '\0';
-            return out;
+            return return_string_helper1("Can not remove inexisting file.");
         }
         
     }
@@ -469,16 +446,7 @@ char* lsattr(char* file_name){
     if(file_pointer->file_ == NULL)
     {
         printf("\033[1;31m %s: No such file or directory. \033[0m \n", file_name);
-        char* out = (char*)malloc(sizeof(char)*8);
-        out[0] = 'N';
-        out[1] = 'o';
-        out[2] = ' ';
-        out[3] = 'F';
-        out[4] = 'i';
-        out[5] = 'l';
-        out[6] = 'e';
-        out[7] = '\0';
-        return out;
+        return return_string_helper1("No such file or directory.");
         
     }else
     {
@@ -489,7 +457,7 @@ char* lsattr(char* file_name){
             temp = temp->next_file;
             if (temp == NULL)
             {
-                printf("\033[1;31m %s: No such file or directory. \033[0m \n", file_name);
+                printf("\033[1;31m %s: -No such file or directory. \033[0m \n", file_name);
                 //return;
                 break;
             }
@@ -502,7 +470,7 @@ char* lsattr(char* file_name){
             printf("=> Creation date: %s\n", temp->creation_date);
             printf("=> Last modification date: %s\n", temp->last_mod);
 
-            char attrs[500];
+            char attrs[] = "                                                                                           ";
             strcpy(attrs, "=> Name: ");
             strcat(attrs, temp->file_name);
             strcat(attrs, "\n");
@@ -519,33 +487,11 @@ char* lsattr(char* file_name){
             strcat(attrs, "\n");
             strcat(attrs, "=> Last modification date: ");
             strcat(attrs, temp->last_mod);
-
-            int len = strlen(attrs);
-            char* out = (char*)malloc(sizeof(char)*len);
-            int index = 0;
-            while (index < len)
-            {
-                out[index] = attrs[index];
-                index++;
-            }
-            out[index] = '\0';
-            return out;
+            return return_string_helper1(attrs);
         }else
         {
-            char* out = (char*)malloc(sizeof(char)*8);
-            out[0] = 'N';
-            out[1] = 'o';
-            out[2] = ' ';
-            out[3] = 'F';
-            out[4] = 'i';
-            out[5] = 'l';
-            out[6] = 'e';
-            out[7] = '\0';
-            return out;
+            return return_string_helper1("No such file or directory.");
         }
-        
-        
-        
     }
 }
 void trace_file_system(void){
@@ -784,4 +730,17 @@ int compare_strings1(char* str1, char* str2){
     {
         return 0;
     }
+}
+char* return_string_helper1(char* string_to_return){
+    int len = strlen(string_to_return);
+    char *string_r = (char *)malloc(sizeof(char)*len);
+    memset(string_r, '0', len);
+    int counter = 0;
+    while (counter < len)
+    {
+        string_r[counter] = string_to_return[counter];
+        counter++;
+    }
+    string_r[counter] = '\0';
+    return string_r;
 }

@@ -54,20 +54,20 @@ void init_root(void);
 /*Create a directory inside a father directory.*/
 void mkdir_(char* new_directory);
 /*Get inside a child directory.*/ 
-void cd_(char* next_directory); 
+char* cd_(char* next_directory); 
 /*Print all the directories.*/
 char* ls_(void); 
 /*Remove a certain directory.*/
-void rmdir_(char* directory); 
+char* rmdir_(char* directory); 
 void free_all(void);
 file_system* export_current_pointer(void);
 file_system* export_root(void);
-void rename_file(char* actual_name, char* new_name);
+char* rename_file(char* actual_name, char* new_name);
 int get_len(void);
 /*to create a file.*/
 void touch_(char* file_name); 
 /*for renaming files*/
-void mv(char* old_name, char* new_name); 
+char* mv(char* old_name, char* new_name); 
 /*for deleting files*/
 char* rm(char* file_name); 
 int get_file_list_len(void);
@@ -79,4 +79,5 @@ void trace_son(file_system* node);
 char* return_directories(void);
 //-----------File system------------
 int compare_strings1(char* str1, char* str2);
+char* return_string_helper1(char* string_to_return);
 #endif
