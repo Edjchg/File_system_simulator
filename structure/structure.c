@@ -772,3 +772,33 @@ char* return_string_helper1(char* string_to_return){
     string_r[counter] = '\0';
     return string_r;
 }
+
+//--------------  Tree restoring ---------------------
+void touch_restore(char* file_name, int bytes, char *owner, char* creation_date, char *last_mod)
+{
+    if (file_pointer->file_ == NULL)
+    {
+        file_pointer->file_ = (file*)malloc(sizeof(file));
+        file_pointer->file_->file_name = file_name;
+        file_pointer->file_->bytes = bytes;
+        file_pointer->file_->owner = owner;
+        file_pointer->file_->creation_date = creation_date;
+        file_pointer->file_->last_mod = last_mod;
+        file_pointer->file_->next_file = NULL; 
+    }else
+    {
+        file* temp = file_pointer->file_;
+        while (temp->next_file != NULL)
+        {
+            temp = temp->next_file;
+        }
+        temp->next_file = (file*)malloc(sizeof(file));
+        temp->next_file->file_name = file_name;
+        temp->next_file->bytes = bytes;
+        temp->next_file->owner = owner;
+        temp->next_file->creation_date = creation_date;
+        temp->next_file->last_mod = last_mod;
+        temp->next_file->next_file = NULL;
+        
+    }
+}
