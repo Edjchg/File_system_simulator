@@ -49,9 +49,9 @@ char* interpret_command(char* instruction, char* argument, char* argument2){
         
         printf("Se detecto mkdir\n");
         printf("El nombre de la carpeta es: %s\n", argument);
-        mkdir_(argument);
-        return return_string_helper(out_put);
-
+        //mkdir_(argument);
+        //return return_string_helper(out_put);
+        return mkdir_(argument);
     }else if (compare_strings(instruction, "cd"))
     {
         printf("Se detecto cd\n");
