@@ -5,11 +5,21 @@
 #include "structure.h"
 #include <string.h>
 
+typedef struct file_restore
+{
+    char file_name[100];
+    char owner[100];
+    char creation_date[100];
+    char last_mod[100];
+    int bytes;
+}file_restore;
+
 
 typedef struct restore_tree
 {
-    int command;//1 cd / 2 mkdir
+    int command;//1 cd / 2 mkdir / 3 touch_restore
     char n_file[100];
+    struct file_restore file_info;
 }restore_tree;
 
 char *tree_parser_wr(file_system *root);
