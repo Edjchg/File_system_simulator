@@ -19,7 +19,6 @@ char *tree_parser_wr(file_system *root)
     FILE *file = fopen("output.dat", "wb");
         if (file != NULL)
         {
-            //Saving the B-tree in disk: 
             fwrite(structure_str, strlen(structure_str),1, file);
             fclose(file);
         }
@@ -51,7 +50,6 @@ void tree_parser_aux_wr(file_system* node, char *structure_str)
         strcat(structure_str, "},{");
         if (node->file_!= NULL)
         {
-            ls();
             file *temp;
             temp = node->file_;
             while ( temp != NULL)
@@ -76,20 +74,14 @@ void tree_parser_aux_wr(file_system* node, char *structure_str)
            
 }
 
-/**
- * {root():{},{USR(root):{LIB(root):{include(root):{},{header1(include):
- * {header2(include):{},{},{}},{},{[name,owner,creation_date,mod_date,n_bytes][]},{}},
- * {libgpioman(LIB):{libmath(LIB):{},{},{}},{},{}},{}},{game1(USR):{game2(USR):{home(USR):{},
- * {dentro_de_home(home):{},{hola(dentro_de_home):{},{},{}},{}},{}},{},{}},{},{}},{}},{}}
- * */
 
-
-file_system *tree_parser_rd(char *file_name)
+void *tree_parser_rd(char *file_name)
 {
     FILE* file = fopen(file_name, "rb");
     if (file == NULL)
     {
         perror("Tree parser reader: File not found!\n");
+        return NULL;
     }
     fseek(file, 0, SEEK_END); 
     int size = ftell(file);
@@ -97,7 +89,6 @@ file_system *tree_parser_rd(char *file_name)
     char *content = malloc(size);
     fread(content, 1, size, file);
     fclose(file);
-    //printf("%s \n", content);
     if(content[0] == '{')
     {
         if(content[1] != '}')
@@ -118,13 +109,11 @@ file_system *tree_parser_rd(char *file_name)
     {
         if (commd[i].command == 1)
         {
-            //printf("cd(%s) \n", commd[i].n_file);
-            cd(commd[i].n_file);
+            cd_(commd[i].n_file);
         }
         else if (commd[i].command == 2)
         {
-            //printf("mkdir(%s) \n", commd[i].n_file);
-            mkdir(commd[i].n_file);
+            mkdir_(commd[i].n_file);
         }
         else if (commd[i].command == 3)
         {
@@ -138,9 +127,8 @@ file_system *tree_parser_rd(char *file_name)
 }
 
 
-file_system *tree_parser_aux_rd(char *tree_source, int *pointer_rd, struct restore_tree *commd, int *pointer_cmd)
+void tree_parser_aux_rd(char *tree_source, int *pointer_rd, struct restore_tree *commd, int *pointer_cmd)
 {
-    //printf("%s \n", &tree_source[*pointer_rd]);
     if(tree_source[*pointer_rd] == '{')
     {
         (*pointer_rd)++;
@@ -155,8 +143,6 @@ file_system *tree_parser_aux_rd(char *tree_source, int *pointer_rd, struct resto
             char name[len+1];
             memset(name,'\0',len+1);
             strncpy(name, &tree_source[(*pointer_rd)-len],len);
-            //printf("%s \n", name);
-
             if (tree_source[*pointer_rd] == '(')
             {
                 (*pointer_rd)++;
@@ -170,24 +156,15 @@ file_system *tree_parser_aux_rd(char *tree_source, int *pointer_rd, struct resto
                     }
                     char name_fh[len_fh+1];
                     memset(name_fh,'\0',len_fh+1);
-                    strncpy(name_fh, &tree_source[(*pointer_rd)-len_fh],len_fh);
-                    /*if (strcmp(name_fh,"root") != 0)
-                    {
-                        printf("cd(%s) \n",name_fh);
-                    }*/      
+                    strncpy(name_fh, &tree_source[(*pointer_rd)-len_fh],len_fh);     
                 }
                 (*pointer_rd)++;   
             }
-
-            //printf("mkdir(%s) \n", name);
             commd[*pointer_cmd].command = 2;
             strcpy(commd[*pointer_cmd].n_file,name);
             (*pointer_cmd)++;
-            //mkdir(name);
-            //ls();
             (*pointer_rd)++;
             tree_parser_aux_rd(tree_source, pointer_rd,commd, pointer_cmd);
-            //printf("Bro %d \n", *pointer_rd);
         }
         (*pointer_rd)++;
     }
@@ -206,8 +183,6 @@ file_system *tree_parser_aux_rd(char *tree_source, int *pointer_rd, struct resto
             char name[len+1];
             memset(name,'\0',len+1);
             strncpy(name, &tree_source[(*pointer_rd)-len],len);
-            //printf("%s \n", name);
-
             if (tree_source[*pointer_rd] == '(')
             {
                 (*pointer_rd)++;
@@ -224,34 +199,21 @@ file_system *tree_parser_aux_rd(char *tree_source, int *pointer_rd, struct resto
                     strncpy(name_fh, &tree_source[(*pointer_rd)-len_fh],len_fh);
                     if (strcmp(name_fh,"root") != 0)
                     {
-                        //printf("cd(%s) \n",name_fh);
                         commd[*pointer_cmd].command = 1;
                         strcpy(commd[*pointer_cmd].n_file, name_fh);
                         (*pointer_cmd)++;
-                        //cd(name_fh);
                     }         
                 }
                 (*pointer_rd)++;   
             }
-
-            //printf("mkdir(%s) \n", name);
             commd[*pointer_cmd].command = 2;
             strcpy(commd[*pointer_cmd].n_file, name);
             (*pointer_cmd)++;
-            //mkdir(name);
-            //ls();
             (*pointer_rd)++;
             tree_parser_aux_rd(tree_source, pointer_rd, commd, pointer_cmd); 
-            //if(strcmp(export_current_pointer()->directory_name, "root") != 0)           
-            //{
-                //printf("cd(..) \n");
-                commd[*pointer_cmd].command = 1;
-                strcpy(commd[*pointer_cmd].n_file, "..");
-                (*pointer_cmd)++;
-                //cd("..");
-                //ls();
-            //}
-            //printf("Son %d \n", *pointer_rd);
+            commd[*pointer_cmd].command = 1;
+            strcpy(commd[*pointer_cmd].n_file, "..");
+            (*pointer_cmd)++;
         }
         (*pointer_rd)++;   
     }
@@ -294,12 +256,10 @@ file_system *tree_parser_aux_rd(char *tree_source, int *pointer_rd, struct resto
                 commd[*pointer_cmd].command = 1;
                 strcpy(commd[*pointer_cmd].n_file, "..");
                 (*pointer_cmd)++;
-
             }
         }
         (*pointer_rd)++;   
     }
-    //printf("Final %d %s \n", *pointer_rd, &tree_source[*pointer_rd]);
 }
  
 /**
