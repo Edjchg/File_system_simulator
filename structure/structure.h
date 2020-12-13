@@ -52,9 +52,10 @@ int delete_in(int index);
 /*Init the root of the file system.*/
 void init_root(void); 
 /*Create a directory inside a father directory.*/
-void mkdir_(char* new_directory);
+char* mkdir_(char* new_directory);
 /*Get inside a child directory.*/ 
 char* cd_(char* next_directory); 
+int check_file_names(char* name);
 /*Print all the directories.*/
 char* ls_(void); 
 /*Remove a certain directory.*/

@@ -22,20 +22,13 @@ void init_root(void){
     return;
 }
 
-void mkdir_(char* new_directory){
+char* mkdir_(char* new_directory){
     printf("Se llamo a mkdir: %s\n", new_directory);
     int len = strlen(new_directory);
     char* name;
     if (len > 0)
     {
-        name = (char *)malloc(sizeof(char)*len);
-        int index = 0;
-        while (index < len)
-        {
-            name[index] = new_directory[index];
-            index++;
-        }
-        name[index] = '\0';
+        name = return_string_helper1(new_directory);
     }
     if (root->son_file == NULL)
     {
@@ -49,35 +42,46 @@ void mkdir_(char* new_directory){
         root->son_file->level = level;
         root->son_file->brother_number = 0;
         printf("1 El nivel de %s es %i y el numero de brother es %i\n", root->son_file->directory_name, root->son_file->level, root->son_file->brother_number);
-        //file_pointer = root;
+        
+        return return_string_helper1(" ");//file_pointer = root;
     }else
     {
         file_system* temp = file_pointer->son_file;
-        if(temp != NULL){
-            while (temp->brother_file != NULL)
-            {
-                temp = temp->brother_file;
+        int compare;
+        if (check_file_names(new_directory))
+        {
+            if(temp != NULL){
+                while (temp->brother_file != NULL)
+                {
+                    temp = temp->brother_file;  
+                }
+                    temp->brother_file = (file_system*)malloc(sizeof(file_system));
+                    temp->brother_file->directory_name = name;//new_directory;
+                    temp->brother_file->son_file = NULL;
+                    temp->brother_file->father_file = temp->father_file;
+                    temp->brother_file->brother_file = NULL;
+                    temp->brother_file->file_ = NULL;
+                    temp->brother_file->level = level;
+                    temp->brother_file->brother_number = get_len() - 1;
+                    return return_string_helper1(" ");
+            
+            }else{
+                file_pointer->son_file = (file_system*)malloc(sizeof(file_system));
+                file_pointer->son_file->directory_name = name;//new_directory; 
+                file_pointer->son_file->father_file = file_pointer;
+                file_pointer->son_file->son_file = NULL;
+                file_pointer->son_file->brother_file = NULL;
+                file_pointer->son_file->file_ = NULL;
+                file_pointer->level = level;
+                file_pointer->brother_number = get_len() - 1;
+                printf("2 El nivel de %s es %i y el numero de brother es %i\n", file_pointer->son_file->directory_name, file_pointer->level, file_pointer->brother_number);
+                return return_string_helper1(" ");
             }
-            temp->brother_file = (file_system*)malloc(sizeof(file_system));
-            temp->brother_file->directory_name = name;//new_directory;
-            temp->brother_file->son_file = NULL;
-            temp->brother_file->father_file = temp->father_file;
-            temp->brother_file->brother_file = NULL;
-            temp->brother_file->file_ = NULL;
-            temp->brother_file->level = level;
-            temp->brother_file->brother_number = get_len() - 1;
-            printf("2 El nivel de %s es %i y el numero de brother es %i\n", temp->brother_file->directory_name, temp->brother_file->level, temp->brother_file->brother_number);
-        }else{
-            file_pointer->son_file = (file_system*)malloc(sizeof(file_system));
-            file_pointer->son_file->directory_name = name;//new_directory; 
-            file_pointer->son_file->father_file = file_pointer;
-            file_pointer->son_file->son_file = NULL;
-            file_pointer->son_file->brother_file = NULL;
-            file_pointer->son_file->file_ = NULL;
-            file_pointer->level = level;
-            file_pointer->brother_number = get_len() - 1;
-            printf("2 El nivel de %s es %i y el numero de brother es %i\n", file_pointer->son_file->directory_name, file_pointer->level, file_pointer->brother_number);
+        }else
+        {
+            return return_string_helper1("Name is not available.");
         }
+        
         
     }
 }
@@ -127,6 +131,30 @@ char* cd_(char* next_directory){
             return return_string_helper1("No such file or directory.");
         }  
     }
+}
+int check_file_names(char* name){
+    file_system* temp;
+    int flag;
+    if (file_pointer->son_file != NULL)
+    {
+        temp = file_pointer->son_file;
+        while (temp != NULL)
+        {
+            if (compare_strings1(temp->directory_name, name))
+            {
+                flag = 0;
+                break;
+            }else
+            {
+                temp = temp->brother_file;
+                flag = 1;
+            }
+        }
+    }else
+    {
+        flag = 1;
+    }
+    return flag;   
 }
 char* ls_(void){
 //Print all directories:
