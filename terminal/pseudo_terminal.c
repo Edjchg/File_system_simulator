@@ -49,16 +49,22 @@ char* interpret_command(char* instruction, char* argument, char* argument2){
         
         printf("Se detecto mkdir\n");
         printf("El nombre de la carpeta es: %s\n", argument);
-        //mkdir_(argument);
-        //return return_string_helper(out_put);
-        return mkdir_(argument);
+        if (strlen(argument) == 0){
+            return return_string_helper1("Missing argument.");
+        }else
+        {
+            return mkdir_(argument);
+        }
     }else if (compare_strings(instruction, "cd"))
     {
         printf("Se detecto cd\n");
-        //cd_(argument);
-        //return return_string_helper(out_put);
-        return cd_(argument);
-
+        if (strlen(argument) == 0)
+        {
+            return return_string_helper1("Missing argument.");
+        }else
+        {
+            return cd_(argument);
+        }
     }else if (compare_strings(instruction, "ls"))
     {
         printf("Se detecto ls\n");
@@ -69,57 +75,80 @@ char* interpret_command(char* instruction, char* argument, char* argument2){
     }else if (compare_strings(instruction, "rmdir"))
     {
         printf("Se detecto rmdir\n");
-        //rmdir_(argument);
-        //return return_string_helper(out_put);
-        return rmdir_(argument);
+        if (strlen(argument) == 0)
+        {
+            return return_string_helper1("Missing argument.");
+        }else
+        {
+            return rmdir_(argument);
+        }
     }else if (compare_strings(instruction, "rename_file"))
     {
         printf("Se detecto rename_file\n");
-        //rename_file(argument, argument2);
-        //return return_string_helper(out_put);
-        return rename_file(argument, argument2);
+        if (strlen(argument) == 0 || strlen(argument2) == 0){
+            return return_string_helper1("Missing arguments.");
+        }else
+        {
+            return rename_file(argument, argument2);
+        }
     }else if (compare_strings(instruction, "touch"))
     {
         printf("Se detecto touch\n");
-        touch_(argument);
-        return return_string_helper(out_put);
+        if (strlen(argument) == 0)
+        {
+            return return_string_helper1("Missing argument.");
+        }else
+        {
+            touch_(argument);
+            return return_string_helper(out_put);
+        }
     }else if (compare_strings(instruction, "mv"))
     {
         printf("Se detecto mv\n");
-        //mv(argument, argument2);
-        //return out_put;
-        return mv(argument, argument2);
+        if (strlen(argument) == 0 || strlen(argument2) == 0)
+        {
+            return return_string_helper1("Missing arguments.");
+        }else
+        {
+            return mv(argument, argument2);
+        }
     }else if (compare_strings(instruction, "rm"))
     {
         printf("Se detecto rm\n");
-        //rm(argument);
-        //return out_put;
-        return rm(argument);
+        if (strlen(argument) == 0)
+        {
+            return return_string_helper1("Missing argument.");
+        }else
+        {
+            return rm(argument);
+        }
     }else if (compare_strings(instruction, "lsattr"))
     {
         printf("Se detecto lsattr\n");
-        //lsattr(argument);
-        //return out_put;
-        return lsattr(argument);
+        if (strlen(argument) == 0)
+        {
+            return return_string_helper1("Missing argument.");
+        }else
+        {
+            return lsattr(argument);
+        }
     }else
     {
         printf("No existe ese comando\n");
-        return return_string_helper("Este comando no existe");
+        return return_string_helper("Unknown command.");
         
     }
   
 }
-
-
 char* parse_command(gchar* command){
     char* comm = (char*)command;
     int len = strlen(command) - 1;
     printf("El len del comando es: %i\n", len);
-    char instr[100] = "   ";
+    char instr[100];
     memset(instr, 0, 100);
-    char arg[100] = "   ";
+    char arg[100];
     memset(arg, 0, 100);
-    char arg2[100] = "   ";
+    char arg2[100];
     memset(arg2, 0, 100);
     int index = 0;
     int index_instr = 0;
@@ -132,20 +161,29 @@ char* parse_command(gchar* command){
         index_instr++;
         index++;
     }
-    index++;
-    while (index < len && comm[index] != 32)
+    if (index +1 <len)
     {
-        arg[index_arg] = comm[index];
-        index_arg++;
         index++;
+        while (index < len && comm[index] != 32)
+        {
+           arg[index_arg] = comm[index];
+            index_arg++;
+            index++;
+        }
     }
-    index++;
-    while (index < len)
+    
+    if (index +1 < len)
     {
-        arg2[index_arg2] = comm[index];
-        index_arg2++;
         index++;
+        while (index < len)
+        {
+            arg2[index_arg2] = comm[index];
+            index_arg2++;
+            index++;
+        }
     }
+    
+    
     
     /*
     if (strlen(instr) == 0)
@@ -205,8 +243,9 @@ static void insert_text(GtkButton *button, Widgets *wid){
     printf("%li\n", strlen(response));
     if (strlen(response) >= 3)
     {
+        printf("free the pointer\n");
         free(response);
-    }  
+    }
 }
 
 static void get_text(GtkButton *button, Widgets *wid){
