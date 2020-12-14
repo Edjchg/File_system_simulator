@@ -101,7 +101,7 @@ char* cd_(char* next_directory){
         }else{
             printf("No tiene papá ..\n");
             //return;
-            return return_string_helper1("No father directory.");
+            return return_string_helper1("No father directory, you are in root.");
         }
     }else{
         //printf("Se intenta entrar a otro archivo\n");
