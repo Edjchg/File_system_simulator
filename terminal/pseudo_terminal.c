@@ -133,7 +133,7 @@ char* interpret_command(char* instruction, char* argument, char* argument2){
             return lsattr(argument);
         }
         
-    }else if(compare_strings1(instruction, "cat"){
+    }else if(compare_strings1(instruction, "cat")){
     
     	if (strlen(argument) == 0)
         {
@@ -280,7 +280,7 @@ static void insert_text(GtkButton *button, Widgets *wid){
     if (strlen(response) >= 3)
     {
         printf("free the pointer\n");
-        free(response);
+        //free(response);
     }
 }
 
