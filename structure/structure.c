@@ -357,6 +357,8 @@ void touch_(char* file_name){
         file_pointer->file_->next_file = NULL;
         file_pointer->file_->creation_date = " ";
         file_pointer->file_->last_mod = " "; 
+
+        new_item(file_pointer->file_);
     }else
     {
         file* temp = file_pointer->file_;
@@ -370,8 +372,9 @@ void touch_(char* file_name){
         temp->next_file->owner = "owner";
         temp->next_file->creation_date = " ";
         temp->next_file->last_mod = " ";
-        temp->next_file->next_file = NULL;
-        
+        temp->next_file->next_file = NULL; 
+
+        new_item(temp->next_file);
     }
 }
 char* mv(char* old_name, char* new_name){
@@ -426,7 +429,6 @@ char* rm(char* file_name){
     {
         while (strcmp(temp->file_name, file_name) != 0)
         {
-            
             temp = temp->next_file;
             if (temp == NULL)
             {
@@ -436,7 +438,10 @@ char* rm(char* file_name){
             counter++;
         }
         if (temp != NULL)
-        {
+        {  
+            char * temp_block = malloc(sizeof(temp->blocks[0]));
+            sprintf(temp_block, "%d", temp->blocks[0]);
+            delete_file(temp_block);
             if (counter == 0)
             {
                 file_pointer->file_ = file_pointer->file_->next_file;
@@ -492,29 +497,35 @@ char* lsattr(char* file_name){
         }
         if (temp != NULL)
         {
-            printf("=> Name: %s\n", temp->file_name);
-            printf("=> Owner: %s\n", temp->owner);
-            printf("=> Bytes: %i\n", temp->bytes);
-            printf("=> Creation date: %s\n", temp->creation_date);
-            printf("=> Last modification date: %s\n", temp->last_mod);
+            //Agregar el resto
+            /*
+            printf("=> Name: %s\n", find("name", temp->blocks[0]));
+            printf("=> Owner: %s\n", find("owner", temp->blocks[0]));
+            printf("=> Bytes: %i\n", find("size", temp->blocks[0]));
+            printf("=> Creation date: %s\n", find("creation", temp->blocks[0]));
+            printf("=> Last modification date: %s\n", find("modification", temp->blocks[0]));
+            */
 
             char attrs[] = "                                                                                           ";
+            char * block_temp = malloc(sizeof(temp->blocks[0]));
+            sprintf(block_temp, "%d", temp->blocks[0]);
             strcpy(attrs, "=> Name: ");
-            strcat(attrs, temp->file_name);
+            strcat(attrs, get_info("name", block_temp));
             strcat(attrs, "\n");
             strcat(attrs, "=> Owner: ");
-            strcat(attrs, temp->owner);
+            strcat(attrs, get_info("owner", block_temp));
             strcat(attrs, "\n");
             strcat(attrs, "=> Bytes: ");
             char bytes[50];
-            sprintf(bytes, "%i", temp->bytes);
+            sprintf(bytes, "%s", get_info("size", block_temp));
             strcat(attrs, bytes);
             strcat(attrs, "\n");
             strcat(attrs, "=> Creation date: ");
-            strcat(attrs, temp->creation_date);
+            strcat(attrs, get_info("creation", block_temp));
             strcat(attrs, "\n");
             strcat(attrs, "=> Last modification date: ");
-            strcat(attrs, temp->last_mod);
+            strcat(attrs, get_info("modification", block_temp));
+            printf("salgo\n");
             return return_string_helper1(attrs);
         }else
         {
