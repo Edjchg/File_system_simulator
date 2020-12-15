@@ -5,6 +5,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <dirent.h>
+#include "../disk/disk.h"
 //#include <json-glib/json-glib.h>
 //gcc 1.c -g -o 1 $(pkg-config --cflags --libs json-glib-1.0) 
 typedef struct node
@@ -13,17 +14,6 @@ typedef struct node
     char* directory_name;
     //struct file_list;
 }node;
-
-typedef struct file
-{
-    struct file* next_file;
-    char* file_name;
-    char* owner;
-    char* creation_date;
-    char* last_mod;
-    int bytes;
-    int blocks[1000];
-}file;
 
 typedef struct file_system{
     struct file_system* brother_file;
