@@ -533,6 +533,61 @@ char* lsattr(char* file_name){
         }
     }
 }
+char* echo_(char* file_name, char* data){
+    file* temp;
+    if (file_pointer->file_ != NULL)
+    {
+        temp = file_pointer->file_ ;
+        while (temp != NULL)
+        {
+            printf("%s %s, %i\n",file_name,  temp->file_name, compare_strings1(temp->file_name, file_name));
+            if (strcmp(temp->file_name, file_name) == 0)
+            {
+                printf("Lo encontre\n");
+                break;
+            }
+            temp = temp->next_file;
+        }
+        if (temp == NULL)
+        {
+            return return_string_helper1("No such file.");
+        }else
+        {
+            //poner echo
+            return return_string_helper1("           ");
+        }
+    }else
+    {
+        return return_string_helper1("No such file.");
+    } 
+}
+char* cat_(char* file_name){
+    file* temp;
+    if (file_pointer->file_ != NULL)
+    {
+        temp = file_pointer->file_;
+        while (temp != NULL)
+        {
+            if (strcmp(temp->file_name, file_name) == 0)
+            {
+                break;
+            }
+            temp = temp->next_file;
+        }
+        if (temp == NULL)
+        {
+            return return_string_helper1("No such file.");
+        }else
+        {
+            //poner echo
+            return return_string_helper1("           ");
+        }   
+    }else
+    {
+        return return_string_helper1("No such file.");
+    }
+    
+}
 void trace_file_system(void){
     file_system* temp = root;
     if (root != NULL)

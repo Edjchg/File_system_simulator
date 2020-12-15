@@ -63,7 +63,9 @@ char* mv(char* old_name, char* new_name);
 char* rm(char* file_name); 
 int get_file_list_len(void);
 /*for getting the attributes*/
-char* lsattr(char* file_name); 
+char* lsattr(char* file_name);
+char* echo_(char* file_name, char* data);
+char* cat_(char* file_name); 
 void trace_file_system(void);
 void trace_file_aux(file_system* node);
 void trace_son(file_system* node);

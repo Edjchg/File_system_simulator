@@ -132,6 +132,16 @@ char* interpret_command(char* instruction, char* argument, char* argument2){
         {
             return lsattr(argument);
         }
+        
+    }else if(compare_strings1(instruction, "cat"){
+    
+    	if (strlen(argument) == 0)
+        {
+            return return_string_helper1("Missing argument.");
+        }else
+        {
+            return cat_(argument);
+        }
     }else
     {
         printf("No existe ese comando\n");
@@ -161,29 +171,55 @@ char* parse_command(gchar* command){
         index_instr++;
         index++;
     }
-    if (index +1 <len)
-    {
-        index++;
-        while (index < len && comm[index] != 32)
+    if(strcmp(instr, "echo") != 0){
+    
+    
+		if (index +1 <len)
+		{
+		    index++;
+		    while (index < len && comm[index] != 32)
+		    {
+		       arg[index_arg] = comm[index];
+		        index_arg++;
+		        index++;
+		    }
+		}
+		
+		if (index +1 < len)
+		{
+		    index++;
+		    while (index < len)
+		    {
+		        arg2[index_arg2] = comm[index];
+		        index_arg2++;
+		        index++;
+		    }
+		}
+    	char* interpret = interpret_command(instr, arg, arg2);
+    	return interpret;
+    }else{
+    	char data[1000000];
+        int data_index = 0;
+        //memset(data, '0', 1000000);
+        while (comm[index] != 62)
         {
-           arg[index_arg] = comm[index];
-            index_arg++;
+            data[data_index] = comm[index];
+            data_index++;
             index++;
         }
-    }
-    
-    if (index +1 < len)
-    {
         index++;
+        char file_name[50];
+        int file_name_index = 0;
         while (index < len)
         {
-            arg2[index_arg2] = comm[index];
-            index_arg2++;
+            file_name[file_name_index] = comm[index];
+            file_name_index++;
             index++;
         }
+        printf("el comando echo tiene data: |%s| al file:|%s|\n", 	data, file_name);
+        return echo_(file_name, data);
+    
     }
-    
-    
     
     /*
     if (strlen(instr) == 0)
@@ -201,7 +237,7 @@ char* parse_command(gchar* command){
     
     //printf("%i %i\n", index_instr, index_arg);
 
-    char* interpret = interpret_command(instr, arg, arg2);
+    
     
     /* Sección de prueba para poder retornar correctamente un string */
     /*
@@ -216,7 +252,7 @@ char* parse_command(gchar* command){
     string_r[counter] = '\0';*/
     /* --------------------------------------------------------------*/
 
-    return interpret;
+    
 }
 
  
