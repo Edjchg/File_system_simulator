@@ -54,7 +54,7 @@ void init_disk(int block_size){
 void new_item(file *file_){
     char * avalaible_block = find("block", get_free_block());
     char * bit = "1";
-    char * data = "";
+    char * data = " ";
     replace_block(avalaible_block, file_, avalaible_block, bit, data);
     printf("File %s added succesfull to disk to block number %s\n", file_->file_name, avalaible_block);
     file_->blocks[0] = atoi(avalaible_block);
@@ -62,8 +62,7 @@ void new_item(file *file_){
 
 char * create_block(file *file_, char *bval, char *act_block, char *next_block, char * data){
     char * save = malloc(sizeof(char)*file_->bytes + 500);
-    save[0] = '\0'; 
-    strcat(save, bval_start);
+    strcpy(save, bval_start);
     strcat(save, bval);
     strcat(save, bval_end);
 
@@ -102,6 +101,7 @@ char * create_block(file *file_, char *bval, char *act_block, char *next_block, 
     strcat(save, data_end);
 
     strcat(save, "\n");
+    save[strlen(save)] = '\0'; 
     return save;
 }
 
@@ -111,39 +111,31 @@ char * get_info(char * item, char * block_){
 
 char * find(char * item, char * block_){
     if(strcmp(item, "name") == 0){
-        char * res = find_aux(block_, name_start, name_end);
-        return res;
+        return find_aux(block_, name_start, name_end);;
     }else if (strcmp(item, "bit") == 0){
-        char * res = find_aux(block_, bval_start, bval_end);
-        return res;
+        return find_aux(block_, bval_start, bval_end);
     }else if (strcmp(item, "block") == 0){
-        char * res = find_aux(block_, num_block_start, num_block_end);
-        return res;       
+        return find_aux(block_, num_block_start, num_block_end);       
     }else if (strcmp(item, "nblock") == 0){
-        char * res = find_aux(block_, next_block_start, next_block_end);
-        return res;       
+        return find_aux(block_, next_block_start, next_block_end);       
     }else if (strcmp(item, "creation") == 0){
-        char * res = find_aux(block_, creation_start, creation_end);
-        return res;        
+        return find_aux(block_, creation_start, creation_end);       
     }else if (strcmp(item, "owner") == 0){
-        char * res = find_aux(block_, owner_start, owner_end);
-        return res;        
+        return find_aux(block_, owner_start, owner_end);     
     }else if (strcmp(item, "modification") == 0){
-        char * res = find_aux(block_, modification_start, modification_end);
-        return res;        
+        return find_aux(block_, modification_start, modification_end);     
     }else if (strcmp(item, "size") == 0){
-        char * res = find_aux(block_, size_start, size_end);
-        return res;        
+        return find_aux(block_, size_start, size_end);       
     }else if (strcmp(item, "data") == 0){
-        char * full_line = find_line_by_block(atoi(block_));
+        char * full_line = block_;
         char * first_block_ = find_aux(full_line, num_block_start, num_block_end);
         char * next_block_ = find_aux(full_line, next_block_start, next_block_end);
         int temp;
-        
         if(strcmp(first_block_, next_block_) == 0){
             return find_aux(full_line, data_start, data_end);
         }else{
             char * data_ = malloc(atoi(find_aux(full_line, size_start, size_end)));
+            strcpy(data_, " ");
             while(strcmp(first_block_, next_block_) != 0){
                 strcat(data_, find_aux(full_line, data_start, data_end));
                 first_block_ = next_block_;
@@ -151,10 +143,12 @@ char * find(char * item, char * block_){
                 next_block_ = find_aux(full_line, next_block_start, next_block_end);
             }
             strcat(data_, find_aux(full_line, data_start, data_end));
+            //data_[atoi(find_aux(full_line, size_start, size_end))] = '\0';
+            strcat(data_, "\0");
             return return_string_helper2(data_);
         }
     }else{
-        return NULL;
+        return return_string_helper2("             ");
     }
 
 }
@@ -265,12 +259,11 @@ char * find_line_by_block(int num_block){
 
 void add_data(file *file_, char * data){
     int temp = file_->blocks[0];
-    char * first_block = malloc(sizeof(char)*10);
+    char * first_block = malloc(sizeof(char)*1000);
     sprintf(first_block, "%d", temp);
     char * bit = "1";
     //int size_bytes = atoi(find("size", find_line_by_block(file_->blocks[0])));
     int size_bytes = strlen(data);
-    printf("%d, %d\n", size_bytes, block_size_);
     if(size_bytes <= block_size_){
         replace_block(first_block, file_, first_block, bit, data);
     }else{
@@ -313,8 +306,8 @@ void add_data(file *file_, char * data){
                 char * blank_data = "";
 
                 if(cont == size_-1){
-                    printf("entro\n");
                     replace_block(first_block, file_, first_block, bit, chunk);
+                    free(chunk);
                     break;
                 }else{   
                     replace_block(next_block, file_, next_block, bit, blank_data);

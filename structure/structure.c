@@ -23,7 +23,6 @@ void init_root(void){
 }
 
 char* mkdir_(char* new_directory){
-    printf("Se llamo a mkdir: %s\n", new_directory);
     int len = strlen(new_directory);
     char* name;
     if (len > 0)
@@ -41,7 +40,6 @@ char* mkdir_(char* new_directory){
         level += 1;
         root->son_file->level = level;
         root->son_file->brother_number = 0;
-        printf("1 El nivel de %s es %i y el numero de brother es %i\n", root->son_file->directory_name, root->son_file->level, root->son_file->brother_number);
         
         return return_string_helper1(" ");//file_pointer = root;
     }else
@@ -74,7 +72,6 @@ char* mkdir_(char* new_directory){
                 file_pointer->son_file->file_ = NULL;
                 file_pointer->level = level;
                 file_pointer->brother_number = get_len() - 1;
-                printf("2 El nivel de %s es %i y el numero de brother es %i\n", file_pointer->son_file->directory_name, file_pointer->level, file_pointer->brother_number);
                 return return_string_helper1(" ");
             }
         }else
@@ -86,20 +83,17 @@ char* mkdir_(char* new_directory){
     }
 }
 char* cd_(char* next_directory){
-    printf("Se llamó a cd\n");
     if (strcmp(next_directory, "..") ==  0)
     {
         //printf("Se detectó un ..\n");
         if (file_pointer->father_file != NULL)
         {
-            printf("Tiene papá ..\n");
             file_pointer = file_pointer->father_file;
             //chdir("..");
             level -= 1;
             //printf("%s\n", file_pointer->directory_name);
             return return_string_helper1(" ");
         }else{
-            printf("No tiene papá ..\n");
             //return;
             return return_string_helper1("No father directory, you are in root.");
         }
@@ -177,12 +171,10 @@ char* ls_(void){
             printf("\033[0;34m %s \033[0m", temp->directory_name);
             //printf("%s\n", temp->directory_name);
             int len1 = strlen(temp->directory_name);
-            printf("El tamaño del nombre es: %i\n", len1);
             strcat(result, temp->directory_name);
             strcat(result, " ");
             temp = temp->brother_file;
         }
-        printf("\n");
     }
 //Print all files:
     //strcat(result, "\n");
@@ -200,7 +192,6 @@ char* ls_(void){
             strcat(result, temp1->file_name);
             temp1 = temp1->next_file;
         }
-        printf("\n");
     }
     int len = strlen(result);
     char* result1 = (char *)malloc(sizeof(char)*len);
@@ -209,7 +200,6 @@ char* ls_(void){
     while (index < len)
     {
         result1[index] = result[index];
-        printf("%c\n", result1[index]);
         index++;
     }
     result1[index] = '\0';
@@ -294,7 +284,6 @@ char* rename_file(char* actual_name, char* new_name){
         //while (strcmp(temp->directory_name, actual_name) != 0)
         while(compare_strings1(temp->directory_name, actual_name) != 1)
         {
-            printf("Nombre del temp es: %s", temp->directory_name);
             temp = temp->brother_file;
             
             if (temp == NULL)
@@ -525,7 +514,6 @@ char* lsattr(char* file_name){
             strcat(attrs, "\n");
             strcat(attrs, "=> Last modification date: ");
             strcat(attrs, get_info("modification", block_temp));
-            printf("salgo\n");
             return return_string_helper1(attrs);
         }else
         {
@@ -540,10 +528,8 @@ char* echo_(char* file_name, char* data){
         temp = file_pointer->file_ ;
         while (temp != NULL)
         {
-            printf("%s %s, %i\n",file_name,  temp->file_name, compare_strings1(temp->file_name, file_name));
             if (strcmp(temp->file_name, file_name) == 0)
             {
-                printf("Lo encontre\n");
                 break;
             }
             temp = temp->next_file;
@@ -554,6 +540,9 @@ char* echo_(char* file_name, char* data){
         }else
         {
             //poner echo
+
+            printf("dato: %s\n", data);
+            add_data(temp, data);
             return return_string_helper1("           ");
         }
     }else
@@ -578,9 +567,11 @@ char* cat_(char* file_name){
         {
             return return_string_helper1("No such file.");
         }else
-        {
-            //poner echo
-            return return_string_helper1("           ");
+        {   
+            char * temp_block = (char*)malloc(sizeof(temp->blocks[0])+1000);
+            sprintf(temp_block, "%d", temp->blocks[0]);
+            return get_info("data", temp_block);
+            //return return_string_helper1("           ");
         }   
     }else
     {
@@ -592,7 +583,6 @@ void trace_file_system(void){
     file_system* temp = root;
     if (root != NULL)
     {
-        printf("%s\n", root->directory_name);
         strcpy(directories, root->directory_name);
         strcat(directories, "\n");
         trace_file_aux(root);
@@ -611,7 +601,6 @@ void trace_file_aux(file_system* node){
         node->visited = 1;
         strcat(directories,"\n");
         strcat(directories, node->directory_name);
-        printf("%s\n", node->directory_name);
         trace_son(node);
         /*
         if (node->brother_file != NULL)
@@ -621,10 +610,8 @@ void trace_file_aux(file_system* node){
         
     } else if (node->brother_file != NULL)
     {
-        printf(".");
         node = node->brother_file;
         strcat(directories, node->directory_name);
-        printf("%s\n", node->directory_name);
         trace_file_aux(node);
     }else if (node->father_file != NULL && node->father_file != root)
     {
@@ -640,12 +627,10 @@ void trace_file_aux(file_system* node){
 void trace_son(file_system* node){
     if (node->son_file == NULL)
     {
-        printf(".");
         if (node->brother_file != NULL)
         {
             node = node->brother_file;
             strcat(directories, node->directory_name);
-            printf("%s\n", node->directory_name);
             trace_son(node);
         }else
         {
@@ -660,7 +645,6 @@ void trace_son(file_system* node){
         node->visited = 1;
         strcat(directories, "\n");
         strcat(directories, node->directory_name);
-        printf("%s\n", node->directory_name);
         trace_son(node);
     }
 }
@@ -699,7 +683,6 @@ void print_list(){
     node* temp = head;
     while (temp != NULL)
     {
-        printf("%s, ", temp->directory_name);
         temp = temp->next;
     }
     printf("\n");
