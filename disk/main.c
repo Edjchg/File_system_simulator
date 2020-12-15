@@ -1,5 +1,4 @@
 #include "disk.h"
-#include "../structure/structure.h"
 
 int main(){
 
@@ -8,17 +7,21 @@ int main(){
     f->owner = "";
     f->creation_date = "25/01/1998";
     f->last_mod = "11/12/2020";
-    f->bytes = 36;
     f->blocks[0] = 1;
 
-    char * data = "111111000000222222333333444444555555";
-    
+    char * data = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam id commodo mi. Vivamus ultrices erat sed tortor tincidunt laoreet. Nam non condimentum magna. Cras consectetur nisi sit amet tempor tempor. Ut interdum massa vitae imperdiet tempor. Morbi ac consequat odio. Phasellus sagittis molestie pulvinar";
+    f->bytes = strlen(data);
     //init_disk(6);
     //new_item(f);
     //add_data(f, data);
-    char * temp = malloc(sizeof(char)*10);
-    sprintf(temp, "%d", f->blocks[0]);
-    delete_file(temp);
+    //char * temp = malloc(sizeof(char)*10);
+    //sprintf(temp, "%d", f->blocks[0]);
+    //delete_file(temp);
+
+    char * temp_block = (char*)malloc(sizeof(f->blocks[0])+1000);
+    sprintf(temp_block, "%d", f->blocks[0]);
+    char * data_complete = get_info("data", temp_block);
+    printf("%s\n", data_complete);
 
     return 0;
 }

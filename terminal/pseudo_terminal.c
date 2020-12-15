@@ -42,7 +42,6 @@ int compare_strings(char* str1, char* str2){
     }
 }
 char* interpret_command(char* instruction, char* argument, char* argument2){
-    printf("%s(%s, %s)\n", instruction, argument, argument2);
     char* out_put = " ";
     if (compare_strings(instruction, "mkdir"))
     {
@@ -57,7 +56,6 @@ char* interpret_command(char* instruction, char* argument, char* argument2){
         }
     }else if (compare_strings(instruction, "cd"))
     {
-        printf("Se detecto cd\n");
         if (strlen(argument) == 0)
         {
             return return_string_helper1("Missing argument.");
@@ -74,7 +72,6 @@ char* interpret_command(char* instruction, char* argument, char* argument2){
 
     }else if (compare_strings(instruction, "rmdir"))
     {
-        printf("Se detecto rmdir\n");
         if (strlen(argument) == 0)
         {
             return return_string_helper1("Missing argument.");
@@ -84,7 +81,6 @@ char* interpret_command(char* instruction, char* argument, char* argument2){
         }
     }else if (compare_strings(instruction, "rename_file"))
     {
-        printf("Se detecto rename_file\n");
         if (strlen(argument) == 0 || strlen(argument2) == 0){
             return return_string_helper1("Missing arguments.");
         }else
@@ -93,7 +89,6 @@ char* interpret_command(char* instruction, char* argument, char* argument2){
         }
     }else if (compare_strings(instruction, "touch"))
     {
-        printf("Se detecto touch\n");
         if (strlen(argument) == 0)
         {
             return return_string_helper1("Missing argument.");
@@ -104,7 +99,6 @@ char* interpret_command(char* instruction, char* argument, char* argument2){
         }
     }else if (compare_strings(instruction, "mv"))
     {
-        printf("Se detecto mv\n");
         if (strlen(argument) == 0 || strlen(argument2) == 0)
         {
             return return_string_helper1("Missing arguments.");
@@ -114,7 +108,6 @@ char* interpret_command(char* instruction, char* argument, char* argument2){
         }
     }else if (compare_strings(instruction, "rm"))
     {
-        printf("Se detecto rm\n");
         if (strlen(argument) == 0)
         {
             return return_string_helper1("Missing argument.");
@@ -124,7 +117,6 @@ char* interpret_command(char* instruction, char* argument, char* argument2){
         }
     }else if (compare_strings(instruction, "lsattr"))
     {
-        printf("Se detecto lsattr\n");
         if (strlen(argument) == 0)
         {
             return return_string_helper1("Missing argument.");
@@ -153,13 +145,12 @@ char* interpret_command(char* instruction, char* argument, char* argument2){
 char* parse_command(gchar* command){
     char* comm = (char*)command;
     int len = strlen(command) - 1;
-    printf("El len del comando es: %i\n", len);
     char instr[100];
     memset(instr, 0, 100);
-    char arg[100];
-    memset(arg, 0, 100);
-    char arg2[100];
-    memset(arg2, 0, 100);
+    char arg[10000];
+    memset(arg, 0, 10000);
+    char arg2[10000];
+    memset(arg2, 0, 10000);
     int index = 0;
     int index_instr = 0;
     int index_arg = 0;
@@ -172,9 +163,7 @@ char* parse_command(gchar* command){
         index++;
     }
     if(strcmp(instr, "echo") != 0){
-    
-    
-		if (index +1 <len)
+		if (index +1 < len)
 		{
 		    index++;
 		    while (index < len && comm[index] != 32)
@@ -198,7 +187,7 @@ char* parse_command(gchar* command){
     	char* interpret = interpret_command(instr, arg, arg2);
     	return interpret;
     }else{
-    	char data[1000000];
+    	char *data = malloc(sizeof(command));
         int data_index = 0;
         //memset(data, '0', 1000000);
         while (comm[index] != 62)
@@ -207,6 +196,7 @@ char* parse_command(gchar* command){
             data_index++;
             index++;
         }
+        data[data_index] = '\0';
         index++;
         char file_name[50];
         int file_name_index = 0;
@@ -216,7 +206,7 @@ char* parse_command(gchar* command){
             file_name_index++;
             index++;
         }
-        printf("el comando echo tiene data: |%s| al file:|%s|\n", 	data, file_name);
+        printf("el comando echo tiene data: |%s| al file:|%s|\n", data, file_name);
         return echo_(file_name, data);
     
     }
@@ -255,8 +245,6 @@ char* parse_command(gchar* command){
     
 }
 
- 
-
 static void insert_text(GtkButton *button, Widgets *wid){
     GtkTextBuffer *buffer;
     GtkTextMark *mark;
@@ -276,11 +264,11 @@ static void insert_text(GtkButton *button, Widgets *wid){
     strcat(text, "\n");
     gtk_text_buffer_insert(buffer, &iter, text, -1);
     gtk_entry_set_text(GTK_ENTRY(wid->txtEntrada), "");
-    printf("%li\n", strlen(response));
     if (strlen(response) >= 3)
     {
-        printf("free the pointer\n");
+        //printf("free the pointer\n");
         //free(response);
+        //exit(EXIT_FAILURE);
     }
 }
 

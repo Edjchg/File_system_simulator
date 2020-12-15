@@ -9,7 +9,7 @@ int main(int argc, char* argv[]){
     //Start terminal
     init_gtk(argc, argv);
     //Free all memory
-    free_all();
+    //free_all();
     return 0;
 }
 
