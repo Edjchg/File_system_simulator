@@ -16,7 +16,7 @@ char *tree_parser_wr(file_system *root)
     {
         strcat(structure_str, "{}");
     }
-    FILE *file = fopen("output.dat", "wb");
+    FILE *file = fopen("../structure/output.dat", "wb");
         if (file != NULL)
         {
             fwrite(structure_str, strlen(structure_str),1, file);

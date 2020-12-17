@@ -13,7 +13,10 @@ int main(){
     f->bytes = strlen(data);
     //init_disk(6);
     //new_item(f);
-    printf("%s\n", get_info("modification", "2"));
+    printf("%s\n", get_info("modification", "1"));
+    printf("%s\n", get_info("name", "1"));
+    printf("%s\n", get_info("owner", "1"));
+    printf("%s\n", get_info("creation", "1"));
     //add_data(f, data);
     //char * temp = malloc(sizeof(char)*10);
     //sprintf(temp, "%d", f->blocks[0]);

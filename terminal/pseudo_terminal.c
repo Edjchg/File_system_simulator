@@ -2,6 +2,7 @@
 #include "pseudo_terminal.h"
 #include <stdio.h>
 #include <stddef.h>
+#include "../structure/tree_parser.h"
 
 //gcc pseudo_terminal.c -o pseudo_terminal $(pkg-config --cflags --libs gtk+-3.0)
 
@@ -307,6 +308,7 @@ static void get_text(GtkButton *button, Widgets *wid){
 
 static void cerrar()
 {
+    tree_parser_wr(export_root());
     printf("Cerrando \n");
     gtk_main_quit();
 }

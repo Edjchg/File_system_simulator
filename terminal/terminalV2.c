@@ -6,7 +6,7 @@
 #include "pseudo_terminal.h"
 
 #include "../structure/tree_parser.h"
-//Compile with: gcc -o terminal  terminal.c ../disk/disk.c ../structure/structure.c pseudo_terminal.c
+//Compile with: gcc -o terminal  terminalV2.c ../disk/disk.c ../structure/structure.c pseudo_terminal.c $(pkg-config --cflags --libs gtk+-3.0)
 
 int main(int argc, char* argv[]){
     char command[10000];

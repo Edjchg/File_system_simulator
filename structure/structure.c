@@ -364,7 +364,7 @@ void touch_(char* file_name){
             char* temp_ = return_string_helper1(asctime(tm));
             temp_[strlen(temp_)-1] = '\0';
 		    file_pointer->file_->creation_date = temp_;
-            char* temp_2 = asctime(tm);
+            char* temp_2 = (char *) asctime(tm);
             temp_2[strlen(temp_2)-1] = '\0';
 		    file_pointer->file_->last_mod = temp_2; 
 		
@@ -526,14 +526,12 @@ char* lsattr(char* file_name){
             char* temp_ = malloc(10);
             sprintf(temp_, "%d", temp->blocks[0]);
             
-            printf("%s\n", get_info("modification", temp_));
+            //printf("m: %s\n", get_info("modification", temp_));
             printf("=> Name: %s\n", get_info("name", temp_));
             printf("=> Owner: %s\n", get_info("owner", temp_));
             printf("=> Bytes: %s\n", get_info("size", temp_));
             printf("=> Creation date: %s\n", get_info("creation", temp_));
-
-            printf("Antes de F\n");
-            
+            //printf("=> Modification date: %s\n", get_info("modifications", temp_));
            /*
             printf("=> Name: %s\n", temp->file_name);
             printf("=> Owner: %s\n", temp->owner);
@@ -593,7 +591,7 @@ char* echo_(char* file_name, char* data){
             temp_[strlen(temp_)-1] = '\0';
             temp->last_mod = temp_;
             printf("dato: %s\n", data);
-            add_data(temp, data);
+            add_data(temp, data);;
             return return_string_helper1("           ");
         }
     }else

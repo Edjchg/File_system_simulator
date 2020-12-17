@@ -110,26 +110,30 @@ char * get_info(char * item, char * block_){
 }
 
 char * find(char * item, char * block_){
-    printf("item %s \n", item);
     if(strcmp(item, "name") == 0){
-        return return_string_helper2(find_aux(block_, name_start, name_end));
+        char * temp_ = find_aux(block_, name_start, name_end);
+        return temp_;
     }else if (strcmp(item, "bit") == 0){
-        return  return_string_helper2(find_aux(block_, bval_start, bval_end));
+        char * temp_ =  find_aux(block_, bval_start, bval_end);
+        return temp_;
     }else if (strcmp(item, "block") == 0){
-        return return_string_helper2(find_aux(block_, num_block_start, num_block_end));       
+        char * temp_ =  find_aux(block_, num_block_start, num_block_end);   
+        return temp_;    
     }else if (strcmp(item, "nblock") == 0){
-        return return_string_helper2(find_aux(block_, next_block_start, next_block_end));       
+        char * temp_ =  find_aux(block_, next_block_start, next_block_end); 
+        return temp_;      
     }else if (strcmp(item, "creation") == 0){
-        return find_aux(block_, creation_start, creation_end);       
+        char * temp_ =  find_aux(block_, creation_start, creation_end);  
+        return temp_;     
     }else if (strcmp(item, "owner") == 0){
-        return return_string_helper2(find_aux(block_, owner_start, owner_end));     
-    }else if (strcmp(item, "modification") == 0){
-        
-        //printf("%s\n", find_aux(block_, modification_start, modification_end));
-        printf("F\n");
-        return return_string_helper2(find_aux(block_, modification_start, modification_end));    
+        char * temp_ =  find_aux(block_, owner_start, owner_end);    
+        return temp_; 
+    }else if (strcmp(item, "modification") == 0){ 
+        char * temp_ = find_aux(block_, modification_start, modification_end);   
+        return temp_;
     }else if (strcmp(item, "size") == 0){
-        return return_string_helper2(find_aux(block_, size_start, size_end));       
+        char * temp_ =  find_aux(block_, size_start, size_end); 
+        return temp_;      
     }else if (strcmp(item, "data") == 0){
         char * full_line = block_;
         char * first_block_ = find_aux(full_line, num_block_start, num_block_end);
