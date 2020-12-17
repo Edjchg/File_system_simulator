@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stddef.h>
 #include "../structure/tree_parser.h"
+#include "../directory_view/gtktreeview.h"
 
 //gcc pseudo_terminal.c -o pseudo_terminal $(pkg-config --cflags --libs gtk+-3.0)
 
@@ -154,8 +155,9 @@ char* interpret_command(char* instruction, char* argument, char* argument2){
     		return chown_(argument, argument2);
     	}
     
-    }else
-    {
+    }else if(compare_strings1(instruction, "vs")){
+        show_disk(export_root(), 0, "");
+    }else{
         printf("No existe ese comando\n");
         return return_string_helper("Unknown command.");
         
