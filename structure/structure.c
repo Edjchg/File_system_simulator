@@ -105,7 +105,7 @@ char* cd_(char* next_directory){
             //while (strcmp(temp->directory_name, next_directory) != 0)
             while(compare_strings1(temp->directory_name, next_directory) != 1)
             {
-                printf("en cd voy por: %s\n", temp->directory_name);
+                //printf("en cd voy por: %s\n", temp->directory_name);
                 temp = temp->brother_file;
                 if (temp == NULL)
                 {
@@ -465,7 +465,7 @@ char* rm(char* file_name){
         {  
             char * temp_block = malloc(sizeof(temp->blocks[0]));
             sprintf(temp_block, "%d", temp->blocks[0]);
-            delete_file(temp_block);
+            //delete_file(temp_block);
             if (counter == 0)
             {
                 file_pointer->file_ = file_pointer->file_->next_file;
@@ -526,19 +526,20 @@ char* lsattr(char* file_name){
             char* temp_ = malloc(10);
             sprintf(temp_, "%d", temp->blocks[0]);
             
-            //printf("m: %s\n", get_info("modification", temp_));
+            printf("m: %s\n", get_info("modification", temp_));
             printf("=> Name: %s\n", get_info("name", temp_));
             printf("=> Owner: %s\n", get_info("owner", temp_));
             printf("=> Bytes: %s\n", get_info("size", temp_));
             printf("=> Creation date: %s\n", get_info("creation", temp_));
-            //printf("=> Modification date: %s\n", get_info("modifications", temp_));
-           /*
+            printf("=> Modification date: %s\n", get_info("modification", temp_));
+           
+            /**
             printf("=> Name: %s\n", temp->file_name);
             printf("=> Owner: %s\n", temp->owner);
             printf("=> Bytes: %i\n", temp->bytes);
             printf("=> Creation date: %s\n", temp->creation_date);
             printf("=> Last modification date: %s\n", temp->last_mod);
-*/
+            /*
             char attrs[] = "                                                                                           ";
             /*char * block_temp = malloc(sizeof(temp->blocks[0]));
             sprintf(block_temp, "%d", temp->blocks[0]);
@@ -558,7 +559,7 @@ char* lsattr(char* file_name){
             strcat(attrs, "\n");
             strcat(attrs, "=> Last modification date: ");
             strcat(attrs, get_info("modification", block_temp));*/
-            return return_string_helper1(attrs);
+            return return_string_helper1("Attributos..");
         }else
         {
         	printf("\033[1;31m No such file. \033[0m \n");
@@ -591,7 +592,7 @@ char* echo_(char* file_name, char* data){
             temp_[strlen(temp_)-1] = '\0';
             temp->last_mod = temp_;
             printf("dato: %s\n", data);
-            add_data(temp, data);;
+            add_data(temp, data);
             return return_string_helper1("           ");
         }
     }else
@@ -658,7 +659,7 @@ char* chown_(char* owner, char* file_name){
         temp_[strlen(temp_)-1] = '\0';
         temp->last_mod = temp_;
         temp->owner = owner_;//new_name;
-        modify_attribute(temp, " "); 
+        //modify_attribute(temp, " "); 
         return return_string_helper1(" ");  
     }else
     {
@@ -910,6 +911,7 @@ char* return_string_helper1(char* string_to_return){
 }
 
 //--------------  Tree restoring ---------------------
+/**
 void touch_restore(char* file_name, int bytes, char *owner, char* creation_date, char *last_mod)
 {
     char* name;
@@ -926,8 +928,8 @@ void touch_restore(char* file_name, int bytes, char *owner, char* creation_date,
         file_pointer->file_->file_name = name;
         file_pointer->file_->bytes = bytes;
         file_pointer->file_->owner = owner_temp;
-        file_pointer->file_->creation_date = creation_date_temp;
-        file_pointer->file_->last_mod = last_mod_temp;
+        file_pointer->file_->creation_date = "45";//creation_date_temp;
+        file_pointer->file_->last_mod = "12";//last_mod_temp;
         file_pointer->file_->next_file = NULL; 
     }else
     {
@@ -940,8 +942,37 @@ void touch_restore(char* file_name, int bytes, char *owner, char* creation_date,
         temp->next_file->file_name = name;
         temp->next_file->bytes = bytes;
         temp->next_file->owner = owner_temp;
-        temp->next_file->creation_date = creation_date_temp;
-        temp->next_file->last_mod = last_mod_temp;
+        temp->next_file->creation_date = "45";//creation_date_temp;
+        temp->next_file->last_mod = "12";//last_mod_temp;
         temp->next_file->next_file = NULL; 
+    }
+}
+**/
+ void touch_restore(char* file_name, int bytes, char *owner, char* creation_date, char *last_mod)
+{
+    if (file_pointer->file_ == NULL)
+    {
+        file_pointer->file_ = (file*)malloc(sizeof(file));
+        file_pointer->file_->file_name = file_name;
+        file_pointer->file_->bytes = bytes;
+        file_pointer->file_->owner = owner;
+        file_pointer->file_->creation_date = creation_date;
+        file_pointer->file_->last_mod = last_mod;
+        file_pointer->file_->next_file = NULL; 
+    }else
+    {
+        file* temp = file_pointer->file_;
+        while (temp->next_file != NULL)
+        {
+            temp = temp->next_file;
+        }
+        temp->next_file = (file*)malloc(sizeof(file));
+        temp->next_file->file_name = file_name;
+        temp->next_file->bytes = bytes;
+        temp->next_file->owner = owner;
+        temp->next_file->creation_date = creation_date;
+        temp->next_file->last_mod = last_mod;
+        temp->next_file->next_file = NULL;
+        
     }
 }

@@ -7,11 +7,11 @@
 int main(int argc, char* argv[]){
     //Start pointer for B-tree
     
-    if(atoi(argv[2]) == 1)
+    //if(atoi(argv[2]) == 1)
         init_disk(atoi(argv[1]));
 
-    init_root();
-    //tree_parser_rd("../structure/output.dat");
+    //init_root();
+    tree_parser_rd("../structure/output.dat");
 
     init_gtk(argc, argv);
 

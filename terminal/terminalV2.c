@@ -10,7 +10,7 @@
 
 int main(int argc, char* argv[]){
     char command[10000];
-    init_disk(atoi(argv[1]));
+    //init_disk(atoi(argv[1]));
     tree_parser_rd("../structure/output.dat");
     //init_root();
     printf("----- Pseudo terminal. -----\n");

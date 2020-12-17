@@ -71,7 +71,7 @@ static void add_root(GtkTreeView *treeview)
 	gtk_tree_store_set(model_store, &iter,
 			COLUMN_MOVE,folder_img, 
 			COLUMN_COMMENTS, "root", 
-			-1);
+			-1); 
 	//g_print("Directory root added\n");
 }
 
@@ -162,8 +162,9 @@ void show_disk_aux(file_system* node, char *nivel, int parent)
     if (node != NULL)
     {   
 		//printf("Nivel %s name %s \n", nivel, node->directory_name);
+
 		add_row_tree(node->directory_name,
-					 GTK_TREE_VIEW(treeview), nivel, 0);  
+			GTK_TREE_VIEW(treeview), nivel, 0);  
 		if (node->son_file != NULL)
         {
 			char snum[15];
@@ -172,7 +173,6 @@ void show_disk_aux(file_system* node, char *nivel, int parent)
 			show_disk_aux(node->son_file, nivel, 0);
 			nivel[strlen(nivel)-2] = '\0'; 
 			//printf("%s \n", nivel); 
-
         }
 		if (node->file_!= NULL)
         {
