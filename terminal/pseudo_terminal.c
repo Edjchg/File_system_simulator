@@ -2,8 +2,7 @@
 #include "pseudo_terminal.h"
 #include <stdio.h>
 #include <stddef.h>
-#include "../structure/tree_parser.h"
-#include "../directory_view/gtktreeview.h"
+
 
 //gcc pseudo_terminal.c -o pseudo_terminal $(pkg-config --cflags --libs gtk+-3.0)
 

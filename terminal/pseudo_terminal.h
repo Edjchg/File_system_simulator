@@ -3,6 +3,8 @@
 #include <gtk/gtk.h>
 #include <string.h>
 #include "../structure/structure.h"
+#include "../structure/tree_parser.h"
+#include "../directory_view/gtktreeview.h"
 
 typedef struct{
     GtkWidget *txtEntrada,*tvEditor;
