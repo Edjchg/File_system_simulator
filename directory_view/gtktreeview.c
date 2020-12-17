@@ -12,6 +12,9 @@ enum
 	NUM_COLUMNS
 };
 
+/**
+ * Inicializate the tree model
+ * */
 GtkTreeModel *create_model_treeview(void)
 {
 	GtkTreeStore *model_store;
@@ -50,9 +53,8 @@ static void add_row_tree (gchar *name, GtkTreeView *treeview, const gchar *path_
 		COLUMN_COMMENTS, name, 
 		-1);
 	}
-	g_print("%s \n", gtk_tree_model_get_string_from_iter (model, &iter));
-
-	g_print("add new row....\n");
+	//g_print("From add row :%s \n", gtk_tree_model_get_string_from_iter (model, &iter));
+	//g_print("add new row....\n");
 }
 
 
@@ -70,7 +72,7 @@ static void add_root(GtkTreeView *treeview)
 			COLUMN_MOVE,folder_img, 
 			COLUMN_COMMENTS, "root", 
 			-1);
-	g_print("Directory root added\n");
+	//g_print("Directory root added\n");
 }
 
 /**
@@ -97,6 +99,10 @@ int  main (int argc, char * argv[])
 	show_disk(root, argc, argv);
 }
 **/
+
+/**
+ * Function to configure and inicializate gtk element.
+ * */
 void configure_vi(int argc, char * argv[], file_system *root)
 {
 	GtkWidget *window, *scroll;
@@ -105,8 +111,8 @@ void configure_vi(int argc, char * argv[], file_system *root)
 	GtkTreeModel *model;
 	
 	gtk_init(&argc, &argv);
-	folder_img =  gdk_pixbuf_new_from_file ("./folder.png", NULL);
-	file_img =  gdk_pixbuf_new_from_file ("./file.png", NULL);
+	folder_img =  gdk_pixbuf_new_from_file ("../directory_view/folder.png", NULL);
+	file_img =  gdk_pixbuf_new_from_file ("../directory_view/file.png", NULL);
 	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_title(GTK_WINDOW(window), "Directory");
 	gtk_window_set_default_size(GTK_WINDOW(window), 600,800);
@@ -133,56 +139,59 @@ void configure_vi(int argc, char * argv[], file_system *root)
 	add_root(GTK_TREE_VIEW(treeview));
 	file_system *temp = root;
 	char nivel[100] = "0";
-	printf("Show_disk_aux \n \n");
-    show_disk_aux(temp, nivel, 0);
+	//printf("Show_disk_aux \n \n");
+    show_disk_aux(temp->son_file, nivel, 0);
 	gtk_widget_show_all(window);
 	gtk_main();
 }
 
 
-
+/**
+ *	Function to create and show  windows with tree directory.
+ * */
 void show_disk(file_system *root, int argc, char *argv[])
 {
     configure_vi(argc, argv, root);
 }
 
+/**
+ *	Recursive funtion for navigation the tree.  
+ * */
 void show_disk_aux(file_system* node, char *nivel, int parent)
 {
     if (node != NULL)
     {   
-		printf("%s \n", nivel);
+		//printf("Nivel %s name %s \n", nivel, node->directory_name);
 		add_row_tree(node->directory_name,
-					 GTK_TREE_VIEW(treeview), nivel, 0);
-		if (node->file_!= NULL)
-        {
-            file *temp;
-            temp = node->file_;
-            while (temp != NULL)
-            {
-				add_row_tree(temp->file_name, GTK_TREE_VIEW(treeview), nivel, 1);
-                //printf("%s \n", temp->file_name);
-                temp = temp->next_file;
-            }       
-        }   
+					 GTK_TREE_VIEW(treeview), nivel, 0);  
 		if (node->son_file != NULL)
         {
-			//printf("%s \n", node->directory_name);
 			char snum[15];
 			sprintf(snum, ":%d", parent);
 			strcat(nivel, snum);
-			show_disk_aux(node->son_file, nivel, parent);
+			show_disk_aux(node->son_file, nivel, 0);
 			nivel[strlen(nivel)-2] = '\0'; 
 			//printf("%s \n", nivel); 
 
         }
-		if (node->brother_file != NULL)
+		if (node->file_!= NULL)
         {
-			printf("%s \n", node->directory_name);
-			parent++;
+            file *temp;
+            temp = node->file_;
 			char snum[15];
 			sprintf(snum, ":%d", parent);
 			strcat(nivel, snum);
-			show_disk_aux(node->brother_file, nivel, 0);
+            while (temp != NULL)
+            {
+				add_row_tree(temp->file_name, GTK_TREE_VIEW(treeview), nivel, 1);
+                temp = temp->next_file;
+            }   
+			nivel[strlen(nivel)-2] = '\0';
+		} 
+		if (node->brother_file != NULL)
+        {
+			parent++;
+			show_disk_aux(node->brother_file, nivel, parent);
         }
     }           
 }

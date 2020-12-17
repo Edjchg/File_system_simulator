@@ -2,6 +2,10 @@
 #include "tree_parser.h"
 
 
+/**
+ * Function for save in save output.dat 
+ * the information of tree.
+ * */
 char *tree_parser_wr(file_system *root)
 {
     file_system* temp = root;
@@ -27,6 +31,10 @@ char *tree_parser_wr(file_system *root)
     free(structure_str);
 }
 
+
+/**
+ * Recursive function for navigation three.
+ * */
 void tree_parser_aux_wr(file_system* node, char *structure_str)
 {
     if (node->directory_name != NULL)
@@ -74,7 +82,9 @@ void tree_parser_aux_wr(file_system* node, char *structure_str)
            
 }
 
-
+/**
+ * Function for inicializate and read information tree.
+ * */
 void *tree_parser_rd(char *file_name)
 {
     FILE* file = fopen(file_name, "rb");
@@ -127,7 +137,10 @@ void *tree_parser_rd(char *file_name)
     free(pointer_cmd);
 }
 
-
+/**
+ * Recursive function for create tree with the information 
+ * in file output.dat
+ * */
 void tree_parser_aux_rd(char *tree_source, int *pointer_rd, struct restore_tree *commd, int *pointer_cmd)
 {
     if(tree_source[*pointer_rd] == '{')
