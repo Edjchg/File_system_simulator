@@ -6,6 +6,7 @@
 #include "../directory_view/gtktreeview.h"
 
 //Compile with: gcc -o test_file_system test_file_system.c structure.c
+// gcc -o test_file_system test_file_system.c structure.c ../directory_view/gtktreeview.c ../disk/disk.c $(pkg-config --cflags --libs gtk+-3.0)
 int main(int argc, char* argv[]){
     /*
     Building a basic file system:
@@ -26,91 +27,176 @@ int main(int argc, char* argv[]){
     file_system* current_pointer; 
     printf("%d \n", argc);
     init_root();
+    touch_("prueba.txt");
+    touch_("prueba2.txt");
     mkdir_("usr");
     mkdir_("lib");
     mkdir_("include");
     cd_("usr");
     mkdir_("game1");
     mkdir_("game2");
+    touch_("prueba.txt");
+    touch_("prueba2.txt");
     cd_("..");
     cd_("lib");
     mkdir_("libgpioman");
     mkdir_("libmath");
+    touch_("prueba.txt");
+    touch_("prueba2.txt");
     cd_("..");
     cd_("include");
     mkdir_("header1");
     mkdir_("header2");
+    touch_("prueba.txt");
+    touch_("prueba2.txt");
     cd_("..");
-    /**
+    
     current_pointer = export_current_pointer();
     printf("El current nombre del archivo es %s\n", current_pointer->directory_name);
-    cd("usr");
+    cd_("usr");
     current_pointer = export_current_pointer();
     printf("El current nombre del archivo es %s\n", current_pointer->directory_name);
-    cd("game1");
+    cd_("game1");
     current_pointer = export_current_pointer();
     printf("El current nombre del archivo es %s\n", current_pointer->directory_name);
-    cd("GTA");
-    cd("..");
-    cd("..");
-    cd("lib");
+    
+    cd_("GTA");
+    cd_("..");
+    cd_("..");
+    cd_("lib");
     current_pointer = export_current_pointer();
     printf("El current nombre del archivo es %s\n", current_pointer->directory_name);
-    cd("libmath");
+    cd_("libmath");
     current_pointer = export_current_pointer();
     printf("El current nombre del archivo es %s\n", current_pointer->directory_name);
-    cd("Hola");
-    cd("..");
-    cd("..");
-    cd("include");
+    
+    cd_("Hola");
+    cd_("..");
+    cd_("..");
+    cd_("include");
     current_pointer = export_current_pointer();
     printf("El current nombre del archivo es %s\n", current_pointer->directory_name);
-    cd("header1");
+    cd_("header1");
     current_pointer = export_current_pointer();
     printf("El current nombre del archivo es %s\n", current_pointer->directory_name);
-    cd("Vars");
-    cd("..");
-    cd("header2");
+    
+    cd_("Vars");
+    cd_("..");
+    cd_("header2");
     current_pointer = export_current_pointer();
     printf("El current nombre del archivo es %s\n", current_pointer->directory_name);
-    cd("Vars");
-    ls();
-    cd("..");
-    ls();
-    cd("..");
-    ls();
-    rename_file("usr", "USR");
-    ls();
-    rename_file("lib", "LIB");
-    ls();
-    rename_file("varas", "cosas");
-    rmdir("USR");
-    ls();
-    rmdir("include");
-    ls();
-    cd("USR");
-    rmdir("LIB");
-    ls();
-    //From here we add files:
-    mkdir("home");
-    cd("home");
-    touch("prueba.txt");
-    touch("prueba2.txt");
-    mkdir("dentro_de_home");
-    ls();
-    cd("dentro_de_home");
-    touch("prueba1.txt");
-    touch("prueba100.txt");
-    mkdir("hola");
-    ls();
-    mv("prueba1.txt", "varas.txt");
-    touch("a.txt");
-    touch("b.txt");
-    ls();
-    rm("a.txt");
-    ls();
-    lsattr("varas.txt");**/
+    
+    cd_("Vars");
     ls_();
+    cd_("..");
+    ls_();
+    cd_("..");
+    ls_();
+    rename_file("usr", "USR");
+    
+    ls_();
+    rename_file("lib", "LIB");
+    ls_();
+    rename_file("varas", "cosas");
+    
+    //rmdir_("USR");
+    ls_();
+    //rmdir_("include");
+    ls_();
+    cd_("USR");
+    
+    //rmdir_("LIB");
+    ls_();
+    //From here we add files:
+    mkdir_("home");
+    cd_("home");
+    
+    touch_("prueba.txt");
+    touch_("prueba2.txt");
+    mkdir_("dentro_de_home");
+    //ls_();
+    cd_("dentro_de_home");
+    touch_("prueba1.txt");
+    touch_("prueba100.txt");
+    
+    mkdir_("hola");
+    //ls_();
+    //mv("prueba1.txt", "varas.txt");
+    cd_("hola");
+    touch_("a.txt");
+    touch_("b.txt");
+    //ls_();
+
+    cd_("..");
+    cd_("..");
+    cd_("..");
+    cd_("..");
+    
+
+    cd_("LIB");
+    
+    //rmdir_("LIB");
+    ls_();
+    //From here we add files:
+    mkdir_("home");
+    cd_("libmath");
+    
+    touch_("prueba.txt");
+    touch_("prueba2.txt");
+    mkdir_("dentro_de_home");
+    //ls_();
+    cd_("dentro_de_home");
+    touch_("prueba1.txt");
+    touch_("prueba100.txt");
+    
+    mkdir_("hola");
+    //ls_();
+    //mv("prueba1.txt", "varas.txt");
+    cd_("hola");
+    touch_("a.txt");
+    touch_("b.txt");
+    //ls_();
+
+    cd_("..");
+    cd_("..");
+    cd_("..");
+    cd_("..");
+
+
+
+    cd_("include");
+    
+    //rmdir_("LIB");
+    ls_();
+    //From here we add files:
+    mkdir_("home");
+    cd_("header1");
+    
+    touch_("prueba.txt");
+    touch_("prueba2.txt");
+    mkdir_("dentro_de_home");
+    //ls_();
+    cd_("dentro_de_home");
+    touch_("prueba1.txt");
+    touch_("prueba100.txt");
+    
+    mkdir_("hola");
+    //ls_();
+    //mv("prueba1.txt", "varas.txt");
+    cd_("hola");
+    touch_("a.txt");
+    touch_("b.txt");
+    //ls_();
+
+    cd_("..");
+    cd_("..");
+    cd_("..");
+    cd_("..");
+
+    //rm("a.txt");
+    //ls_();
+    //lsattr("varas.txt");
+    //ls_();
     show_disk(export_root(), argc, argv);
     free_all();
     return 0;
