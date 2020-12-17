@@ -28,4 +28,5 @@ void add_data(file *f, char * data);
 char * return_string_helper2(char* string_to_return);
 char * get_info(char * item, char * block_);
 void delete_file(char * block);
+void modify_attribute(file * file_, char * data_);
 #endif

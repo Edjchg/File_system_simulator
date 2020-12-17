@@ -150,6 +150,30 @@ int check_file_names(char* name){
     }
     return flag;   
 }
+int check_the_files(char* file_name){
+    file* temp;
+    int flag;
+    if (file_pointer->file_ != NULL)
+    {
+        temp = file_pointer->file_;
+        while (temp != NULL)
+        {
+            if (compare_strings1(temp->file_name, file_name))
+            {
+                flag = 0;
+                break;
+            }else
+            {
+                temp = temp->next_file;
+                flag = 1;
+            }
+        }
+    }else
+    {
+        flag = 1;
+    }
+    return flag; 
+}
 char* ls_(void){
 //Print all directories:
     file_system* temp; //= file_pointer;
@@ -326,36 +350,49 @@ void touch_(char* file_name){
     int len = strlen(file_name);
     char* name;
     name = return_string_helper1(file_name);
-
-
-    printf("aqui \n");
-    if (file_pointer->file_ == NULL)
+    time_t t = time(NULL);
+    struct tm *tm = localtime(&t);
+    if (check_the_files(file_name))
     {
-        file_pointer->file_ = (file*)malloc(sizeof(file));
-        file_pointer->file_->file_name = name;//file_name;
-        file_pointer->file_->bytes = 0;
-        file_pointer->file_->owner = "owner";
-        file_pointer->file_->next_file = NULL;
-        file_pointer->file_->creation_date = "0/0/0";
-        file_pointer->file_->last_mod = "0/0/0"; 
-    
-        new_item(file_pointer->file_);
+		if (file_pointer->file_ == NULL)
+		{
+		    file_pointer->file_ = (file*)malloc(sizeof(file));
+		    file_pointer->file_->file_name = name;//file_name;
+		    file_pointer->file_->bytes = 0;
+		    file_pointer->file_->owner = "owner";
+		    file_pointer->file_->next_file = NULL;
+            char* temp_ = return_string_helper1(asctime(tm));
+            temp_[strlen(temp_)-1] = '\0';
+		    file_pointer->file_->creation_date = temp_;
+            char* temp_2 = asctime(tm);
+            temp_2[strlen(temp_2)-1] = '\0';
+		    file_pointer->file_->last_mod = temp_2; 
+		
+		    new_item(file_pointer->file_);
+		}else
+		{
+		    file* temp = file_pointer->file_;
+		    while (temp->next_file != NULL)
+		    {
+		        temp = temp->next_file;
+		    }
+		    temp->next_file = (file*)malloc(sizeof(file));
+		    temp->next_file->file_name = name;//file_name;
+		    temp->next_file->bytes = 0;
+		    temp->next_file->owner = "owner";
+            char* temp_ = return_string_helper1(asctime(tm));
+            temp_[strlen(temp_)-1] = '\0';
+		    temp->next_file->creation_date = temp_;
+            char* temp_2 = asctime(tm);
+            temp_2[strlen(temp_2)-1] = '\0';
+		    temp->next_file->last_mod = temp_2;
+		    temp->next_file->next_file = NULL; 
+		    
+		    new_item(temp->next_file);
+		}
     }else
     {
-        file* temp = file_pointer->file_;
-        while (temp->next_file != NULL)
-        {
-            temp = temp->next_file;
-        }
-        temp->next_file = (file*)malloc(sizeof(file));
-        temp->next_file->file_name = name;//file_name;
-        temp->next_file->bytes = 0;
-        temp->next_file->owner = "owner";
-        temp->next_file->creation_date = "0/0/0";
-        temp->next_file->last_mod = "0/0/0";
-        temp->next_file->next_file = NULL; 
-        
-        new_item(temp->next_file);
+    	printf("\033[1;31m %s: Can not create existing file. \033[0m \n", file_name);
     }
 }
 char* mv(char* old_name, char* new_name){
@@ -380,7 +417,13 @@ char* mv(char* old_name, char* new_name){
                 return return_string_helper1("Can not rename inexisting file.");
             }
         }
+        time_t t = time(NULL);
+        struct tm *tm = localtime(&t);
+        char* temp_ = asctime(tm);
+        temp_[strlen(temp_)-1] = '\0';
         temp->file_name = name;//new_name; 
+        temp->last_mod = temp_;
+        modify_attribute(temp, " "); 
         return return_string_helper1(" ");  
     }else
     {
@@ -479,16 +522,27 @@ char* lsattr(char* file_name){
         if (temp != NULL)
         {
             //Agregar el resto
-            /*
-            printf("=> Name: %s\n", find("name", temp->blocks[0]));
-            printf("=> Owner: %s\n", find("owner", temp->blocks[0]));
-            printf("=> Bytes: %i\n", find("size", temp->blocks[0]));
-            printf("=> Creation date: %s\n", find("creation", temp->blocks[0]));
-            printf("=> Last modification date: %s\n", find("modification", temp->blocks[0]));
-            */
+            // Estos prints son traidos del disco:
+            char* temp_ = malloc(10);
+            sprintf(temp_, "%d", temp->blocks[0]);
+            
+            printf("%s\n", get_info("modification", temp_));
+            printf("=> Name: %s\n", get_info("name", temp_));
+            printf("=> Owner: %s\n", get_info("owner", temp_));
+            printf("=> Bytes: %s\n", get_info("size", temp_));
+            printf("=> Creation date: %s\n", get_info("creation", temp_));
 
+            printf("Antes de F\n");
+            
+           /*
+            printf("=> Name: %s\n", temp->file_name);
+            printf("=> Owner: %s\n", temp->owner);
+            printf("=> Bytes: %i\n", temp->bytes);
+            printf("=> Creation date: %s\n", temp->creation_date);
+            printf("=> Last modification date: %s\n", temp->last_mod);
+*/
             char attrs[] = "                                                                                           ";
-            char * block_temp = malloc(sizeof(temp->blocks[0]));
+            /*char * block_temp = malloc(sizeof(temp->blocks[0]));
             sprintf(block_temp, "%d", temp->blocks[0]);
             strcpy(attrs, "=> Name: ");
             strcat(attrs, get_info("name", block_temp));
@@ -505,10 +559,11 @@ char* lsattr(char* file_name){
             strcat(attrs, get_info("creation", block_temp));
             strcat(attrs, "\n");
             strcat(attrs, "=> Last modification date: ");
-            strcat(attrs, get_info("modification", block_temp));
+            strcat(attrs, get_info("modification", block_temp));*/
             return return_string_helper1(attrs);
         }else
         {
+        	printf("\033[1;31m No such file. \033[0m \n");
             return return_string_helper1("No such file or directory.");
         }
     }
@@ -528,17 +583,22 @@ char* echo_(char* file_name, char* data){
         }
         if (temp == NULL)
         {
+        	printf("\033[1;31m No such file. \033[0m \n");
             return return_string_helper1("No such file.");
         }else
         {
-            //poner echo
-
+            time_t t = time(NULL);
+            struct tm *tm = localtime(&t);
+            char* temp_ = asctime(tm);
+            temp_[strlen(temp_)-1] = '\0';
+            temp->last_mod = temp_;
             printf("dato: %s\n", data);
             add_data(temp, data);
             return return_string_helper1("           ");
         }
     }else
     {
+    	printf("\033[1;31m No such file. \033[0m \n");
         return return_string_helper1("No such file.");
     } 
 }
@@ -557,6 +617,7 @@ char* cat_(char* file_name){
         }
         if (temp == NULL)
         {
+        	printf("\033[1;31m No such file. \033[0m \n");
             return return_string_helper1("No such file.");
         }else
         {   
@@ -569,9 +630,43 @@ char* cat_(char* file_name){
         }   
     }else
     {
+    	printf("\033[1;31m No such file. \033[0m \n");
         return return_string_helper1("No such file.");
     }
     
+}
+char* chown_(char* owner, char* file_name){
+    char* owner_;
+    owner_ = return_string_helper1(owner);
+    
+    
+    file* temp = file_pointer->file_;
+    if (temp != NULL)
+    {
+        
+        while (strcmp(temp->file_name, file_name) != 0)
+        //while (compare_strings1(old_name, temp->file_name) != 1)
+        {
+            temp = temp->next_file;
+            if (temp == NULL)
+            {
+                printf("\033[1;31m Can not reassign inexisting file. \033[0m \n");
+                return return_string_helper1("Can not reassign inexisting file.");
+            }
+        }
+        time_t t = time(NULL);
+        struct tm *tm = localtime(&t);
+        char * temp_ = asctime(tm);
+        temp_[strlen(temp_)-1] = '\0';
+        temp->last_mod = temp_;
+        temp->owner = owner_;//new_name;
+        modify_attribute(temp, " "); 
+        return return_string_helper1(" ");  
+    }else
+    {
+        printf("\033[1;31m Can not reassign inexisting file. \033[0m \n");
+        return return_string_helper1("Can not reassign inexisting file.");
+    }
 }
 void trace_file_system(void){
     file_system* temp = root;

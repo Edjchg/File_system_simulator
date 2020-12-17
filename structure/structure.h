@@ -5,6 +5,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <dirent.h>
+#include <time.h>
 #include "../disk/disk.h"
 //#include <json-glib/json-glib.h>
 //gcc 1.c -g -o 1 $(pkg-config --cflags --libs json-glib-1.0) 
@@ -44,6 +45,7 @@ char* mkdir_(char* new_directory);
 /*Get inside a child directory.*/ 
 char* cd_(char* next_directory); 
 int check_file_names(char* name);
+int check_the_files(char* file_name);
 /*Print all the directories.*/
 char* ls_(void); 
 /*Remove a certain directory.*/
@@ -64,6 +66,7 @@ int get_file_list_len(void);
 char* lsattr(char* file_name);
 char* echo_(char* file_name, char* data);
 char* cat_(char* file_name); 
+char* chown_(char* owner, char* file_name);
 void trace_file_system(void);
 void trace_file_aux(file_system* node);
 void trace_son(file_system* node);

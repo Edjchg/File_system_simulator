@@ -49,6 +49,7 @@ char* interpret_command(char* instruction, char* argument, char* argument2){
         printf("Se detecto mkdir\n");
         printf("El nombre de la carpeta es: %s\n", argument);
         if (strlen(argument) == 0){
+        	printf("\033[1;31m Missing argument. \033[0m \n");
             return return_string_helper1("Missing argument.");
         }else
         {
@@ -58,6 +59,7 @@ char* interpret_command(char* instruction, char* argument, char* argument2){
     {
         if (strlen(argument) == 0)
         {
+        	printf("\033[1;31m Missing argument. \033[0m \n");
             return return_string_helper1("Missing argument.");
         }else
         {
@@ -74,6 +76,7 @@ char* interpret_command(char* instruction, char* argument, char* argument2){
     {
         if (strlen(argument) == 0)
         {
+        	printf("\033[1;31m Missing argument. \033[0m \n");
             return return_string_helper1("Missing argument.");
         }else
         {
@@ -82,6 +85,7 @@ char* interpret_command(char* instruction, char* argument, char* argument2){
     }else if (compare_strings(instruction, "rename_file"))
     {
         if (strlen(argument) == 0 || strlen(argument2) == 0){
+        	printf("\033[1;31m Missing arguments. \033[0m \n");
             return return_string_helper1("Missing arguments.");
         }else
         {
@@ -91,6 +95,7 @@ char* interpret_command(char* instruction, char* argument, char* argument2){
     {
         if (strlen(argument) == 0)
         {
+        	printf("\033[1;31m Missing argument. \033[0m \n");
             return return_string_helper1("Missing argument.");
         }else
         {
@@ -101,6 +106,7 @@ char* interpret_command(char* instruction, char* argument, char* argument2){
     {
         if (strlen(argument) == 0 || strlen(argument2) == 0)
         {
+        	printf("\033[1;31m Missing arguments. \033[0m \n");
             return return_string_helper1("Missing arguments.");
         }else
         {
@@ -110,6 +116,7 @@ char* interpret_command(char* instruction, char* argument, char* argument2){
     {
         if (strlen(argument) == 0)
         {
+        	printf("\033[1;31m Missing argument. \033[0m \n");
             return return_string_helper1("Missing argument.");
         }else
         {
@@ -119,6 +126,7 @@ char* interpret_command(char* instruction, char* argument, char* argument2){
     {
         if (strlen(argument) == 0)
         {
+        	printf("\033[1;31m Missing argument. \033[0m \n");
             return return_string_helper1("Missing argument.");
         }else
         {
@@ -129,11 +137,22 @@ char* interpret_command(char* instruction, char* argument, char* argument2){
     
     	if (strlen(argument) == 0)
         {
+        	printf("\033[1;31m Missing argument. \033[0m \n");
             return return_string_helper1("Missing argument.");
         }else
         {
             return cat_(argument);
         }
+    }else if(compare_strings1(instruction, "chown")){
+    
+    	if(strlen(argument) == 0 || strlen(argument2) == 0){
+    		printf("\033[1;31m Missing arguments. \033[0m \n");
+            return return_string_helper1("Missing arguments.");
+    	}else
+    	{
+    		return chown_(argument, argument2);
+    	}
+    
     }else
     {
         printf("No existe ese comando\n");

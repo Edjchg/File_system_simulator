@@ -110,29 +110,33 @@ char * get_info(char * item, char * block_){
 }
 
 char * find(char * item, char * block_){
+    printf("item %s \n", item);
     if(strcmp(item, "name") == 0){
-        return find_aux(block_, name_start, name_end);;
+        return return_string_helper2(find_aux(block_, name_start, name_end));
     }else if (strcmp(item, "bit") == 0){
-        return find_aux(block_, bval_start, bval_end);
+        return  return_string_helper2(find_aux(block_, bval_start, bval_end));
     }else if (strcmp(item, "block") == 0){
-        return find_aux(block_, num_block_start, num_block_end);       
+        return return_string_helper2(find_aux(block_, num_block_start, num_block_end));       
     }else if (strcmp(item, "nblock") == 0){
-        return find_aux(block_, next_block_start, next_block_end);       
+        return return_string_helper2(find_aux(block_, next_block_start, next_block_end));       
     }else if (strcmp(item, "creation") == 0){
         return find_aux(block_, creation_start, creation_end);       
     }else if (strcmp(item, "owner") == 0){
-        return find_aux(block_, owner_start, owner_end);     
+        return return_string_helper2(find_aux(block_, owner_start, owner_end));     
     }else if (strcmp(item, "modification") == 0){
-        return find_aux(block_, modification_start, modification_end);     
+        
+        //printf("%s\n", find_aux(block_, modification_start, modification_end));
+        printf("F\n");
+        return return_string_helper2(find_aux(block_, modification_start, modification_end));    
     }else if (strcmp(item, "size") == 0){
-        return find_aux(block_, size_start, size_end);       
+        return return_string_helper2(find_aux(block_, size_start, size_end));       
     }else if (strcmp(item, "data") == 0){
         char * full_line = block_;
         char * first_block_ = find_aux(full_line, num_block_start, num_block_end);
         char * next_block_ = find_aux(full_line, next_block_start, next_block_end);
         int temp;
         if(strcmp(first_block_, next_block_) == 0){
-            return find_aux(full_line, data_start, data_end);
+            return return_string_helper2(find_aux(full_line, data_start, data_end));
         }else{
             char * data_ = malloc(100);//malloc(atoi(find_aux(full_line, size_start, size_end)));
             strcpy(data_, " ");
@@ -148,6 +152,7 @@ char * find(char * item, char * block_){
             return return_string_helper2(data_);
         }
     }else{
+        printf("Entre a un else\n");
         return return_string_helper2("             ");
     }
 
@@ -166,8 +171,8 @@ char * find_aux(char * item, const char * p1, const char * p2){
             target[end - start] = '\0';
         }
     }
-
     char * t2 = return_string_helper2(target);
+    //printf("%s\n", t2);
     return t2;
 }
 
@@ -258,6 +263,7 @@ void add_data(file *file_, char * data){
     char * bit = "1";
     //int size_bytes = atoi(find("size", find_line_by_block(file_->blocks[0])));
     int size_bytes = strlen(data);
+    file_->bytes = size_bytes;
     if(size_bytes <= block_size_){
         replace_block(first_block, file_, first_block, bit, data);
     }else{
@@ -367,4 +373,18 @@ void delete_file(char * block_){
         replace_block(next_block_, f, next_block_, bit, data);
         free(f);
     }
+}
+void modify_attribute(file * file_, char * data_){
+    char * temp = malloc(1000);
+    sprintf(temp, "%d", file_->blocks[0]);
+    if(strcmp(data_, " ") == 0){
+        char * data = find("data", find_line_by_block(file_->blocks[0]));
+        delete_file(temp);
+        new_item(file_);
+        add_data(file_, data);
+    }else{
+        delete_file(temp);
+        new_item(file_);
+        add_data(file_, data_);
+    }  
 }

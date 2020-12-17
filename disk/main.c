@@ -1,5 +1,5 @@
 #include "disk.h"
-
+// gcc -o main main.c ../structure/structure.c disk.c
 int main(){
 
     file *f = malloc(sizeof(file));
@@ -13,15 +13,17 @@ int main(){
     f->bytes = strlen(data);
     //init_disk(6);
     //new_item(f);
+    printf("%s\n", get_info("modification", "2"));
     //add_data(f, data);
     //char * temp = malloc(sizeof(char)*10);
     //sprintf(temp, "%d", f->blocks[0]);
     //delete_file(temp);
 
+/*
     char * temp_block = (char*)malloc(sizeof(f->blocks[0])+1000);
     sprintf(temp_block, "%d", f->blocks[0]);
     char * data_complete = get_info("data", temp_block);
-    printf("%s\n", data_complete);
+    printf("%s\n", data_complete);*/
 
     return 0;
 }
