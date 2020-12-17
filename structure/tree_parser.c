@@ -81,6 +81,7 @@ void *tree_parser_rd(char *file_name)
     if (file == NULL)
     {
         perror("Tree parser reader: File not found!\n");
+        init_root();
         return NULL;
     }
     fseek(file, 0, SEEK_END); 
@@ -161,7 +162,7 @@ void tree_parser_aux_rd(char *tree_source, int *pointer_rd, struct restore_tree 
                 (*pointer_rd)++;   
             }
             commd[*pointer_cmd].command = 2;
-            strcpy(commd[*pointer_cmd].n_file,name);
+            strcpy(commd[*pointer_cmd].n_file, name);
             (*pointer_cmd)++;
             (*pointer_rd)++;
             tree_parser_aux_rd(tree_source, pointer_rd,commd, pointer_cmd);

@@ -14,4 +14,6 @@ char* parse_command(gchar* command);
 static void insert_text(GtkButton *button, Widgets *wid);
 static void get_text(GtkButton *button, Widgets *wid);
 int init_gtk(int argc, char* argv[]);
+
+static void cerrar();
 #endif

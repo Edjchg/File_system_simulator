@@ -27,8 +27,6 @@ typedef struct file_system{
 }file_system;
 
 
-
-
 //---------Linked list-----------
 void add_node(char* directory_name);
 void print_list(void);

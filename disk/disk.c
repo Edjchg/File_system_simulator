@@ -134,7 +134,7 @@ char * find(char * item, char * block_){
         if(strcmp(first_block_, next_block_) == 0){
             return find_aux(full_line, data_start, data_end);
         }else{
-            char * data_ = malloc(atoi(find_aux(full_line, size_start, size_end)));
+            char * data_ = malloc(100);//malloc(atoi(find_aux(full_line, size_start, size_end)));
             strcpy(data_, " ");
             while(strcmp(first_block_, next_block_) != 0){
                 strcat(data_, find_aux(full_line, data_start, data_end));
@@ -166,14 +166,8 @@ char * find_aux(char * item, const char * p1, const char * p2){
             target[end - start] = '\0';
         }
     }
-    int len = strlen(target);
-    char * t2 = (char *)malloc(len);
-    int cont = 0;
-    while (cont < len){
-        t2[cont] = target[cont];
-        cont++;
-    }
-    t2[cont] = '\0';
+
+    char * t2 = return_string_helper2(target);
     return t2;
 }
 
@@ -259,7 +253,7 @@ char * find_line_by_block(int num_block){
 
 void add_data(file *file_, char * data){
     int temp = file_->blocks[0];
-    char * first_block = malloc(sizeof(char)*1000);
+    char * first_block = (char *) malloc(sizeof(int));
     sprintf(first_block, "%d", temp);
     char * bit = "1";
     //int size_bytes = atoi(find("size", find_line_by_block(file_->blocks[0])));
@@ -273,13 +267,14 @@ void add_data(file *file_, char * data){
             size_ = (size_bytes/block_size_) + 1;
             char * next_block = find("block", get_free_block());
             int int_next_block = atoi(next_block);
+            char * chunk = malloc(block_size_);
             while (cont < size_){
-                char * chunk = malloc(block_size_);
+                memset(chunk,0,block_size_);
                 chunk[block_size_] = '\0';
                 if(cont == size_-1){
                     strncpy(chunk, data+cont*block_size_, size_bytes%block_size_);
                     replace_block(first_block, file_, first_block, bit, chunk);
-                    free(chunk);
+                    //free(chunk);
                     break;
                 }else{
                     strncpy(chunk, data+cont*block_size_, block_size_);
@@ -291,23 +286,24 @@ void add_data(file *file_, char * data){
                 first_block = next_block;
                 next_block = find("block", get_free_block());
                 int_next_block = atoi(next_block);
-                free(chunk);
                 cont++;
             }
+            free(chunk);
             free(next_block);
         }else{
             size_ = (size_bytes/block_size_);
             char * next_block = find("block", get_free_block());
             int int_next_block = atoi(next_block);
+            char * chunk = malloc(block_size_);
             while (cont < size_){
-                char * chunk = malloc(block_size_);
+                memset(chunk, 0, block_size_);
                 chunk[block_size_] = '\0';
                 strncpy(chunk, data+cont*block_size_, block_size_);
                 char * blank_data = "";
 
                 if(cont == size_-1){
                     replace_block(first_block, file_, first_block, bit, chunk);
-                    free(chunk);
+                    //free(chunk);
                     break;
                 }else{   
                     replace_block(next_block, file_, next_block, bit, blank_data);
@@ -319,9 +315,9 @@ void add_data(file *file_, char * data){
                 first_block = next_block;
                 next_block = find("block", get_free_block());
                 int_next_block = atoi(next_block);
-                free(chunk);
                 cont++;
             }
+            free(chunk);
             free(next_block);
         } 
     }

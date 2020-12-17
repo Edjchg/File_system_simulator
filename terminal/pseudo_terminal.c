@@ -187,7 +187,7 @@ char* parse_command(gchar* command){
     	char* interpret = interpret_command(instr, arg, arg2);
     	return interpret;
     }else{
-    	char *data = malloc(sizeof(command));
+    	char *data = malloc(strlen(command));
         int data_index = 0;
         //memset(data, '0', 1000000);
         while (comm[index] != 62)
@@ -286,6 +286,12 @@ static void get_text(GtkButton *button, Widgets *wid){
     g_print("%s\n", text);
 }
 
+static void cerrar()
+{
+    printf("Cerrando \n");
+    gtk_main_quit();
+}
+
 int init_gtk(int argc, char* argv[]){
     GtkWidget *window, *scrolled_window, *hbox, *vbox, *insert, *retrieve;
 
@@ -308,15 +314,18 @@ int init_gtk(int argc, char* argv[]){
     g_signal_connect(G_OBJECT(insert), "clicked", G_CALLBACK(insert_text), (gpointer)wid);
     g_signal_connect(G_OBJECT(retrieve), "clicked", G_CALLBACK(get_text), (gpointer)wid);
 
+    g_signal_connect(G_OBJECT(window), "destroy", 
+        G_CALLBACK(cerrar), NULL);
+
     scrolled_window = gtk_scrolled_window_new(NULL, NULL);
     gtk_container_add(GTK_CONTAINER(scrolled_window), wid->tvEditor);
 
-    hbox = gtk_hbox_new(FALSE, 5);
+    hbox = gtk_box_new(FALSE, 5);
     gtk_box_pack_start(GTK_BOX(hbox), wid->txtEntrada, TRUE, TRUE, 5);
     gtk_box_pack_start(GTK_BOX(hbox), insert, TRUE, TRUE, 5);
     gtk_box_pack_start(GTK_BOX(hbox), retrieve, TRUE, TRUE, 5);
 
-    vbox = gtk_vbox_new(FALSE, 5);
+    vbox = gtk_box_new(TRUE, 5);
 
     gtk_box_pack_start(GTK_BOX(vbox), scrolled_window, TRUE, TRUE, 0);
     gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, TRUE, 0);
