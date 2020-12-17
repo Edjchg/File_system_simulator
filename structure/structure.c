@@ -364,7 +364,7 @@ void touch_(char* file_name){
             char* temp_ = return_string_helper1(asctime(tm));
             temp_[strlen(temp_)-1] = '\0';
 		    file_pointer->file_->creation_date = temp_;
-            char* temp_2 = (char *) asctime(tm);
+            char* temp_2 = (char *)asctime(tm);
             temp_2[strlen(temp_2)-1] = '\0';
 		    file_pointer->file_->last_mod = temp_2; 
 		
@@ -525,21 +525,20 @@ char* lsattr(char* file_name){
             // Estos prints son traidos del disco:
             char* temp_ = malloc(10);
             sprintf(temp_, "%d", temp->blocks[0]);
-            
+            /*
             printf("m: %s\n", get_info("modification", temp_));
             printf("=> Name: %s\n", get_info("name", temp_));
             printf("=> Owner: %s\n", get_info("owner", temp_));
             printf("=> Bytes: %s\n", get_info("size", temp_));
-            printf("=> Creation date: %s\n", get_info("creation", temp_));
-            printf("=> Modification date: %s\n", get_info("modification", temp_));
-           
-            /**
+            printf("=> Creation date: %s\n", get_info("creation", temp_));*/
+            ///printf("=> Last modification date: %s\n",get_info("modification", temp_) );
+            
             printf("=> Name: %s\n", temp->file_name);
             printf("=> Owner: %s\n", temp->owner);
             printf("=> Bytes: %i\n", temp->bytes);
             printf("=> Creation date: %s\n", temp->creation_date);
             printf("=> Last modification date: %s\n", temp->last_mod);
-            /*
+            /**
             char attrs[] = "                                                                                           ";
             /*char * block_temp = malloc(sizeof(temp->blocks[0]));
             sprintf(block_temp, "%d", temp->blocks[0]);
@@ -592,7 +591,7 @@ char* echo_(char* file_name, char* data){
             temp_[strlen(temp_)-1] = '\0';
             temp->last_mod = temp_;
             printf("dato: %s\n", data);
-            add_data(temp, data);
+            modify_attribute(temp, data);
             return return_string_helper1("           ");
         }
     }else
@@ -657,9 +656,9 @@ char* chown_(char* owner, char* file_name){
         struct tm *tm = localtime(&t);
         char * temp_ = asctime(tm);
         temp_[strlen(temp_)-1] = '\0';
-        temp->last_mod = temp_;
+        //temp->last_mod = temp_;
         temp->owner = owner_;//new_name;
-        //modify_attribute(temp, " "); 
+        modify_attribute(temp, " "); 
         return return_string_helper1(" ");  
     }else
     {
@@ -948,7 +947,7 @@ void touch_restore(char* file_name, int bytes, char *owner, char* creation_date,
     }
 }
 **/
- void touch_restore(char* file_name, int bytes, char *owner, char* creation_date, char *last_mod)
+ void touch_restore(char* file_name, int bytes, char *owner, char* creation_date, char *last_mod, int block)
 {
     if (file_pointer->file_ == NULL)
     {
@@ -958,6 +957,7 @@ void touch_restore(char* file_name, int bytes, char *owner, char* creation_date,
         file_pointer->file_->owner = owner;
         file_pointer->file_->creation_date = creation_date;
         file_pointer->file_->last_mod = last_mod;
+        file_pointer->file_->blocks[0] = block;
         file_pointer->file_->next_file = NULL; 
     }else
     {
@@ -972,6 +972,7 @@ void touch_restore(char* file_name, int bytes, char *owner, char* creation_date,
         temp->next_file->owner = owner;
         temp->next_file->creation_date = creation_date;
         temp->next_file->last_mod = last_mod;
+        temp->next_file->blocks[0] = block;
         temp->next_file->next_file = NULL;
         
     }

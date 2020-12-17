@@ -72,7 +72,10 @@ void tree_parser_aux_wr(file_system* node, char *structure_str)
                 strcat(structure_str, temp->last_mod);strcat(structure_str, ",");
                 char str[12];
                 sprintf(str, "%d", temp->bytes);
-                strcat(structure_str, str);
+                strcat(structure_str, str);strcat(structure_str, ",");
+                char str1[12];
+                sprintf(str1, "%d", temp->blocks[0]);
+                strcat(structure_str, str1);
                 strcat(structure_str, "]");
                 temp = temp->next_file;
                 
@@ -86,57 +89,61 @@ void tree_parser_aux_wr(file_system* node, char *structure_str)
 /**
  * Function for inicializate and read information tree.
  * */
-void *tree_parser_rd(char *file_name)
-{
-    FILE* file = fopen(file_name, "rb");
-    if (file == NULL)
-    {
-        perror("Tree parser reader: File not found!\n");
-        init_root();
-        return NULL;
-    }
-    fseek(file, 0, SEEK_END); 
-    int size = ftell(file);
-    fseek(file, 0, SEEK_SET); 
-    char *content = malloc(size);
-    fread(content, 1, size, file);
-    fclose(file);
-    if(content[0] == '{')
-    {
-        if(content[1] != '}')
-        {
-            char name[4];
-            strncpy(name, content+1, 4);
-            printf("%s \n", name);
-        }
-    }
+void *tree_parser_rd(char *file_name, int flag)
+{   
     init_root();
-    int *pointer_cmd = malloc(sizeof(int));
-    *pointer_cmd = 0;
-    
-    restore_tree commd[1000];
-    int *pointer_init = malloc(sizeof(int));
-    *pointer_init = 8;
-    tree_parser_aux_rd(content, pointer_init, commd, pointer_cmd);
-    for (int i = 0; i < *pointer_cmd; i++)
+    if (flag == 1)
     {
-        if (commd[i].command == 1)
+        FILE* file = fopen(file_name, "rb");
+        if (file == NULL)
         {
-            cd_(commd[i].n_file);
+            perror("Tree parser reader: File not found!\n");
+            init_root();
+            return NULL;
         }
-        else if (commd[i].command == 2)
+        fseek(file, 0, SEEK_END); 
+        int size = ftell(file);
+        fseek(file, 0, SEEK_SET); 
+        char *content = malloc(size);
+        fread(content, 1, size, file);
+        fclose(file);
+        if(content[0] == '{')
         {
-            mkdir_(commd[i].n_file);
+            if(content[1] != '}')
+            {
+                char name[4];
+                strncpy(name, content+1, 4);
+                printf("%s \n", name);
+            }
         }
-        else if (commd[i].command == 3)
+        int *pointer_cmd = malloc(sizeof(int));
+        *pointer_cmd = 0;
+        
+        restore_tree commd[1000];
+        int *pointer_init = malloc(sizeof(int));
+        *pointer_init = 8;
+        tree_parser_aux_rd(content, pointer_init, commd, pointer_cmd);
+        for (int i = 0; i < *pointer_cmd; i++)
         {
-            touch_restore(commd[i].file_info.file_name,commd[i].file_info.bytes,
-            commd[i].file_info.owner, commd[i].file_info.creation_date, commd[i].file_info.last_mod);
+            if (commd[i].command == 1)
+            {
+                cd_(commd[i].n_file);
+            }
+            else if (commd[i].command == 2)
+            {
+                mkdir_(commd[i].n_file);
+            }
+            else if (commd[i].command == 3)
+            {
+                touch_restore(commd[i].file_info.file_name,commd[i].file_info.bytes,
+                commd[i].file_info.owner, commd[i].file_info.creation_date, commd[i].file_info.last_mod,
+                    commd[i].file_info.block);
+            }
         }
+        free(content);
+        free(pointer_init);
+        free(pointer_cmd);
     }
-    free(content);
-    free(pointer_init);
-    free(pointer_cmd);
 }
 
 /**
@@ -267,6 +274,8 @@ void tree_parser_aux_rd(char *tree_source, int *pointer_rd, restore_tree *commd,
                 strcpy(commd[*pointer_cmd].file_info.last_mod, attr);
                 attr = strtok(NULL, ",");
                 commd[*pointer_cmd].file_info.bytes = atoi(attr);
+                attr = strtok(NULL, ",");
+                commd[*pointer_cmd].file_info.block = atoi(attr);
 
                 (*pointer_rd)++;
                 (*pointer_cmd)++;
