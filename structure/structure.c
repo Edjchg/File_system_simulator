@@ -159,7 +159,7 @@ char* ls_(void){
     strcat(result, ". ..");
     if(file_pointer->son_file == NULL)
     {
-        printf("\033[0;34m . ..\033[0m \n");
+        printf("\033[0;34m . ..\033[0m");
         
     }else
     {
@@ -193,6 +193,7 @@ char* ls_(void){
             temp1 = temp1->next_file;
         }
     }
+    printf("\n");
     int len = strlen(result);
     char* result1 = (char *)malloc(sizeof(char)*len);
     //memset(result1, 0, len);
@@ -321,22 +322,13 @@ int get_len(void){
 }
 
 void touch_(char* file_name){
+    printf(" File name touch %s \n", file_name);
     int len = strlen(file_name);
-
     char* name;
-    if (len > 0)
-    {
-        name = (char*)malloc(sizeof(char)*len);
-        int index = 0;
-        while (index < len)
-        {
-            name[index] = file_name[index];
-            index++;
-        }
-        name[index] = '\0';
-        
-    }
-    
+    name = return_string_helper1(file_name);
+
+
+    printf("aqui \n");
     if (file_pointer->file_ == NULL)
     {
         file_pointer->file_ = (file*)malloc(sizeof(file));
@@ -344,9 +336,9 @@ void touch_(char* file_name){
         file_pointer->file_->bytes = 0;
         file_pointer->file_->owner = "owner";
         file_pointer->file_->next_file = NULL;
-        file_pointer->file_->creation_date = " ";
-        file_pointer->file_->last_mod = " "; 
-
+        file_pointer->file_->creation_date = "0/0/0";
+        file_pointer->file_->last_mod = "0/0/0"; 
+    
         new_item(file_pointer->file_);
     }else
     {
@@ -359,10 +351,10 @@ void touch_(char* file_name){
         temp->next_file->file_name = name;//file_name;
         temp->next_file->bytes = 0;
         temp->next_file->owner = "owner";
-        temp->next_file->creation_date = " ";
-        temp->next_file->last_mod = " ";
+        temp->next_file->creation_date = "0/0/0";
+        temp->next_file->last_mod = "0/0/0";
         temp->next_file->next_file = NULL; 
-
+        
         new_item(temp->next_file);
     }
 }
@@ -570,7 +562,9 @@ char* cat_(char* file_name){
         {   
             char * temp_block = (char*)malloc(sizeof(temp->blocks[0])+1000);
             sprintf(temp_block, "%d", temp->blocks[0]);
-            return get_info("data", temp_block);
+            char *all_info = get_info("data", temp_block);
+            printf("%s \n", all_info);
+            return all_info;
             //return return_string_helper1("           ");
         }   
     }else
@@ -825,14 +819,22 @@ char* return_string_helper1(char* string_to_return){
 //--------------  Tree restoring ---------------------
 void touch_restore(char* file_name, int bytes, char *owner, char* creation_date, char *last_mod)
 {
+    char* name;
+    name = return_string_helper1(file_name); 
+    char* owner_temp;
+    owner_temp = return_string_helper1(owner); 
+    char* creation_date_temp;
+    creation_date_temp = return_string_helper1(creation_date); 
+    char* last_mod_temp;
+    last_mod_temp = return_string_helper1(last_mod);     
     if (file_pointer->file_ == NULL)
     {
         file_pointer->file_ = (file*)malloc(sizeof(file));
-        file_pointer->file_->file_name = file_name;
+        file_pointer->file_->file_name = name;
         file_pointer->file_->bytes = bytes;
-        file_pointer->file_->owner = owner;
-        file_pointer->file_->creation_date = creation_date;
-        file_pointer->file_->last_mod = last_mod;
+        file_pointer->file_->owner = owner_temp;
+        file_pointer->file_->creation_date = creation_date_temp;
+        file_pointer->file_->last_mod = last_mod_temp;
         file_pointer->file_->next_file = NULL; 
     }else
     {
@@ -841,13 +843,12 @@ void touch_restore(char* file_name, int bytes, char *owner, char* creation_date,
         {
             temp = temp->next_file;
         }
-        temp->next_file = (file*)malloc(sizeof(file));
-        temp->next_file->file_name = file_name;
+        temp->next_file  = (file*)malloc(sizeof(file));
+        temp->next_file->file_name = name;
         temp->next_file->bytes = bytes;
-        temp->next_file->owner = owner;
-        temp->next_file->creation_date = creation_date;
-        temp->next_file->last_mod = last_mod;
-        temp->next_file->next_file = NULL;
-        
+        temp->next_file->owner = owner_temp;
+        temp->next_file->creation_date = creation_date_temp;
+        temp->next_file->last_mod = last_mod_temp;
+        temp->next_file->next_file = NULL; 
     }
 }
