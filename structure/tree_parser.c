@@ -10,6 +10,7 @@ char *tree_parser_wr(file_system *root)
 {
     file_system* temp = root;
     char *structure_str = malloc(10000);
+    memset(structure_str, '\0',10000);
     if (root != NULL)
     {
         strcat(structure_str, "{");
@@ -112,11 +113,12 @@ void *tree_parser_rd(char *file_name)
     init_root();
     int *pointer_cmd = malloc(sizeof(int));
     *pointer_cmd = 0;
-    struct restore_tree commd[1000];
+    
+    restore_tree commd[1000];
     int *pointer_init = malloc(sizeof(int));
     *pointer_init = 8;
     tree_parser_aux_rd(content, pointer_init, commd, pointer_cmd);
-    for (size_t i = 0; i < *pointer_cmd; i++)
+    for (int i = 0; i < *pointer_cmd; i++)
     {
         if (commd[i].command == 1)
         {
@@ -141,7 +143,7 @@ void *tree_parser_rd(char *file_name)
  * Recursive function for create tree with the information 
  * in file output.dat
  * */
-void tree_parser_aux_rd(char *tree_source, int *pointer_rd, struct restore_tree *commd, int *pointer_cmd)
+void tree_parser_aux_rd(char *tree_source, int *pointer_rd, restore_tree *commd, int *pointer_cmd)
 {
     if(tree_source[*pointer_rd] == '{')
     {
@@ -246,7 +248,7 @@ void tree_parser_aux_rd(char *tree_source, int *pointer_rd, struct restore_tree 
                     (*pointer_rd)++;
                     len_file_attr++;
                 }
-                char file_attr[len_file_attr];
+                char file_attr[len_file_attr +1];
                 memset(file_attr, '\0', len_file_attr+1);
                 strncpy(file_attr, &tree_source[*pointer_rd-len_file_attr], len_file_attr);
                 char *attr;
@@ -265,6 +267,7 @@ void tree_parser_aux_rd(char *tree_source, int *pointer_rd, struct restore_tree 
                 strcpy(commd[*pointer_cmd].file_info.last_mod, attr);
                 attr = strtok(NULL, ",");
                 commd[*pointer_cmd].file_info.bytes = atoi(attr);
+
                 (*pointer_rd)++;
                 (*pointer_cmd)++;
                 commd[*pointer_cmd].command = 1;

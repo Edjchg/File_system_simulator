@@ -4,6 +4,7 @@
 #include <stdio.h>
 
 #include "../directory_view/gtktreeview.h"
+#include "tree_parser.h"
 
 //Compile with: gcc -o test_file_system test_file_system.c structure.c
 // gcc -o test_file_system test_file_system.c structure.c ../directory_view/gtktreeview.c ../disk/disk.c $(pkg-config --cflags --libs gtk+-3.0)
@@ -26,6 +27,7 @@ int main(int argc, char* argv[]){
     // After all, we delete usr, lib and include: only root is alive, everything went well.
     file_system* current_pointer; 
     printf("%d \n", argc);
+    /**
     init_root();
     touch_("prueba.txt");
     touch_("prueba2.txt");
@@ -50,7 +52,7 @@ int main(int argc, char* argv[]){
     touch_("prueba.txt");
     touch_("prueba2.txt");
     cd_("..");
-    
+
     current_pointer = export_current_pointer();
     printf("El current nombre del archivo es %s\n", current_pointer->directory_name);
     cd_("usr");
@@ -186,6 +188,8 @@ int main(int argc, char* argv[]){
     cd_("hola");
     touch_("a.txt");
     touch_("b.txt");
+    echo_("b.txt", "ibfuiwebfvwivbwievnwevbwehvwejvw");
+    cat_("b.txt");
     //ls_();
 
     cd_("..");
@@ -193,10 +197,19 @@ int main(int argc, char* argv[]){
     cd_("..");
     cd_("..");
 
+    ls_();
     //rm("a.txt");
     //ls_();
     //lsattr("varas.txt");
     //ls_();
+    tree_parser_wr(export_root());**/
+    tree_parser_rd("../structure/output.dat");
+    //show_disk(export_root(), argc, argv);
+    ls_();
+    cd_("USR");
+    touch_("fhg.txt");
+    mkdir_("oitu");
+    ls_();
     show_disk(export_root(), argc, argv);
     free_all();
     return 0;

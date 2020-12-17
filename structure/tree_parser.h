@@ -19,12 +19,12 @@ typedef struct restore_tree
 {
     int command;//1 cd / 2 mkdir / 3 touch_restore
     char n_file[100];
-    struct file_restore file_info;
+    file_restore file_info;
 }restore_tree;
 
 char *tree_parser_wr(file_system *root);
 void tree_parser_aux_wr(file_system* node, char *structure_str);
 void *tree_parser_rd(char *file_name);
-void tree_parser_aux_rd(char *tree_source, int *pointer_rd, struct restore_tree *commd, int *pointer_cmd);
+void tree_parser_aux_rd(char *tree_source, int *pointer_rd, restore_tree *commd, int *pointer_cmd);
 
 #endif

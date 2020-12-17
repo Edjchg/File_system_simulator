@@ -153,9 +153,13 @@ char* interpret_command(char* instruction, char* argument, char* argument2){
     	{
     		return chown_(argument, argument2);
     	}
-    
+    }else if(compare_strings1(instruction, "exit")){
+    	printf("Exiting\n");
+    	tree_parser_wr(export_root());
+    	return return_string_helper("Exiting.");
     }else if(compare_strings1(instruction, "vs")){
         show_disk(export_root(), 0, "");
+        return return_string_helper("Ready");
     }else{
         printf("No existe ese comando\n");
         return return_string_helper("Unknown command.");
@@ -276,12 +280,12 @@ static void insert_text(GtkButton *button, Widgets *wid){
     text = (gchar *)gtk_entry_get_text(GTK_ENTRY(wid->txtEntrada));
     mark = gtk_text_buffer_get_insert(buffer);
     gtk_text_buffer_get_iter_at_mark(buffer, &iter, mark);
-    strcat(text, "\n");
+    //strcat(text, "\n");
     //gtk_text_buffer_insert(buffer, &iter, text, -1);
     printf("%s\n", text);
     char* response = parse_command(text);
     //printf("El comando que se detectó fue: %s\n", response);
-    strcat(text, response);
+    //strcat(text, response);
     strcat(text, "\n");
     gtk_text_buffer_insert(buffer, &iter, text, -1);
     gtk_entry_set_text(GTK_ENTRY(wid->txtEntrada), "");
