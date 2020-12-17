@@ -12,6 +12,7 @@ typedef struct file_restore
     char creation_date[100];
     char last_mod[100];
     int bytes;
+    int block;
 }file_restore;
 
 
@@ -24,7 +25,7 @@ typedef struct restore_tree
 
 char *tree_parser_wr(file_system *root);
 void tree_parser_aux_wr(file_system* node, char *structure_str);
-void *tree_parser_rd(char *file_name);
+void *tree_parser_rd(char *file_name, int flag);
 void tree_parser_aux_rd(char *tree_source, int *pointer_rd, restore_tree *commd, int *pointer_cmd);
 
 #endif

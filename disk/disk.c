@@ -23,32 +23,36 @@ const char * size_end = "</size>";
 const char * data_start = "<data>";
 const char * data_end = "</data>";
 
-void init_disk(int block_size){
-    FILE * fPtr;
-    fPtr = fopen(path, "w");
-    if(fPtr == NULL)
-    {
-        printf("Unable to create file.\n");
-        exit(EXIT_FAILURE);
-    }
+void init_disk(int block_size, int flag){
     block_size_ = block_size;
-    file *f = malloc(sizeof(file));
-    f->file_name = "";
-    f->owner = "";
-    f->creation_date = "";
-    f->last_mod = "";
-    f->bytes = 0;
-    char * data = "";
+    if (flag == 0)
+    {    
+        FILE * fPtr;
+        fPtr = fopen(path, "w");
+        if(fPtr == NULL)
+        {
+            printf("Unable to create file.\n");
+            exit(EXIT_FAILURE);
+        }
+        file *f = malloc(sizeof(file));
+        f->file_name = "";
+        f->owner = "";
+        f->creation_date = "";
+        f->last_mod = "";
+        f->bytes = 0;
+        char * data = "";
 
-    char * block_ = malloc(sizeof(char)*10);
+        char * block_ = malloc(sizeof(char)*10);
 
-    for (int i = 1; i <= 1000; i++){
-        sprintf(block_, "%d", i);
-        char * res = create_block(f, "0", block_, block_, data);
-        fputs(res, fPtr);
+        for (int i = 1; i <= 1000; i++){
+            sprintf(block_, "%d", i);
+            char * res = create_block(f, "0", block_, block_, data);
+            fputs(res, fPtr);
+        }
+        fclose(fPtr);
+        printf("Se reinicio el disco de almacenamiento\n");
     }
-    fclose(fPtr);
-    printf("Se creó el disco de almacenamiento\n");
+    
 }
 
 void new_item(file *file_){

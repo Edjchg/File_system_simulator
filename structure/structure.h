@@ -75,5 +75,5 @@ char* return_directories(void);
 int compare_strings1(char* str1, char* str2);
 char* return_string_helper1(char* string_to_return);
 //-----------restoring tree----------
-void touch_restore(char* file_name, int bytes, char *owner, char* creation_date, char *last_mod);
+void touch_restore(char* file_name, int bytes, char *owner, char* creation_date, char *last_mod, int block);
 #endif

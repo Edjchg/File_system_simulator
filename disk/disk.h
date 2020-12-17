@@ -16,7 +16,7 @@ typedef struct file
     int blocks[1000];
 }file;
 
-void init_disk(int block_size);
+void init_disk(int block_size, int flag);
 void new_item(file *file_);
 char * create_block(file *file_, char *bval, char *block, char *next_block, char * data);
 char * find(char * item, char * block_);

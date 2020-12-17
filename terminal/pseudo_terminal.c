@@ -130,8 +130,8 @@ char* interpret_command(char* instruction, char* argument, char* argument2){
         	printf("\033[1;31m Missing argument. \033[0m \n");
             return return_string_helper1("Missing argument.");
         }else
-        {
-            return lsattr(argument);
+        {   lsattr(argument);
+            return return_string_helper("Atributos");;
         }
         
     }else if(compare_strings1(instruction, "cat")){
