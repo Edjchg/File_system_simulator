@@ -64,8 +64,11 @@ char* rm(char* file_name);
 int get_file_list_len(void);
 /*for getting the attributes*/
 char* lsattr(char* file_name);
+/*add data to a file*/
 char* echo_(char* file_name, char* data);
+/*get the data of a file*/
 char* cat_(char* file_name); 
+/*change the owner of a file*/
 char* chown_(char* owner, char* file_name);
 void trace_file_system(void);
 void trace_file_aux(file_system* node);

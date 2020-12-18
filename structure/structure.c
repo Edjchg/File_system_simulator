@@ -2,13 +2,21 @@
 #include "structure.h"
 
 node* head = NULL;
+/**
+ * Some global variables:
+ * */
+/*The root of the entire B-Tree*/
 file_system* root = NULL;
+/*A pointer that helps to trace the B-Tree*/
 file_system* file_pointer = NULL;
 int level;
 int column;
 char directories[1000000000];
 
-
+/**
+ * This function takes the root and allocates memory for it
+ * setting the pointers null for link more nodes dynamically.
+ * */
 void init_root(void){
     printf("Se llamó a init_root\n");
     root = (file_system*)malloc(sizeof(file_system));
@@ -21,7 +29,11 @@ void init_root(void){
     file_pointer = root;
     return;
 }
-
+/**
+ * As in Linux, mkdir creates a new directory, checking that
+ * the desire directory name is avaliable, by giving the name
+ * of the new directory.
+ * */
 char* mkdir_(char* new_directory){
     int len = strlen(new_directory);
     char* name;
@@ -82,6 +94,10 @@ char* mkdir_(char* new_directory){
         
     }
 }
+/**
+ * As in Linux, cd carry you to the next or the previews directories
+ * in order to navigate over the B-tree, by given the next directory.
+ * */
 char* cd_(char* next_directory){
     if (strcmp(next_directory, "..") ==  0)
     {
@@ -126,6 +142,10 @@ char* cd_(char* next_directory){
         }  
     }
 }
+/**
+ * This function evaluates if a certain given name is already in use or not,
+ * for the directories.
+ * */
 int check_file_names(char* name){
     file_system* temp;
     int flag;
@@ -150,6 +170,10 @@ int check_file_names(char* name){
     }
     return flag;   
 }
+/**
+ * This function evaluates if a certain given name is already in use or not,
+ * for the files.
+ * */
 int check_the_files(char* file_name){
     file* temp;
     int flag;
@@ -174,6 +198,9 @@ int check_the_files(char* file_name){
     }
     return flag; 
 }
+/**
+ * As in Linux, ls allows us to see the files and directories inside a father directory.
+ * */
 char* ls_(void){
 //Print all directories:
     file_system* temp; //= file_pointer;
@@ -231,6 +258,9 @@ char* ls_(void){
     return result1;
     
 }
+/**
+ * As in Linux, rmdir allows you to delete a directory by given a name.
+ * */
 char* rmdir_(char* directory){
     file_system* temp = file_pointer->son_file;
     int len = get_len();
@@ -284,17 +314,29 @@ char* rmdir_(char* directory){
          
     }
 }
-
+/**
+ * This function release memory allocated for the pointers.
+ * */
 void free_all(void){
     free(root);
     //free(head);
 }
+/**
+ * This function export the file pointer, wich is moved with cd command.
+ * */
 file_system* export_current_pointer(void){
     return file_pointer;
 }
+/**
+ * This function exports the root pointer.
+ * */
 file_system* export_root(void){
     return root;
 }
+/**
+ * This function allows us to rename a certain directory by given the 
+ * actual name and the new one.
+ * */
 char* rename_file(char* actual_name, char* new_name){
     int len = strlen(new_name);
     char* name;
@@ -328,6 +370,9 @@ char* rename_file(char* actual_name, char* new_name){
     
     
 }
+/**
+ * This function takes the len of the list of directories inside a father directory.
+ * */
 int get_len(void){
     file_system* temp = file_pointer->son_file;
     int counter = 0;
@@ -344,7 +389,10 @@ int get_len(void){
         return counter;
     }
 }
-
+/**
+ * As in Linux, touch is usefull when creating a new file inside a father direcotory by 
+ * giving a name.
+ * */
 void touch_(char* file_name){
     printf(" File name touch %s \n", file_name);
     int len = strlen(file_name);
@@ -395,6 +443,9 @@ void touch_(char* file_name){
     	printf("\033[1;31m %s: Can not create existing file. \033[0m \n", file_name);
     }
 }
+/**
+ * As in Linux, mv allows us to rename a file by giving the actual name, and the new one.
+ * */
 char* mv(char* old_name, char* new_name){
     int len = strlen(new_name);
     char* name;
@@ -431,6 +482,9 @@ char* mv(char* old_name, char* new_name){
         return return_string_helper1("Can not rename inexisting file.");
     }
 }
+/**
+ * This function iterate over the files inside a certain directory.
+ * */
 int get_file_list_len(void){
     file* temp = file_pointer->file_;
     int counter = 0;
@@ -441,6 +495,9 @@ int get_file_list_len(void){
     }
     return counter;
 }
+/**
+ * As in Linux, rm allows us to remove a file from directory by giving the namae.
+ * */
 char* rm(char* file_name){
     file* temp = file_pointer->file_;
     int counter = 0;
@@ -496,6 +553,9 @@ char* rm(char* file_name){
         
     }
 }
+/**
+ * As in Linux, lsattr allows us to get the attributes of a file by giving the filename
+ * */
 char* lsattr(char* file_name){
 
     file* temp;// = file_pointer->file_;
@@ -566,6 +626,10 @@ char* lsattr(char* file_name){
         }
     }
 }
+/**
+ * As in Linux, echo allows us to fill a file with data by giving the new data to insert 
+ * and the name of the file.
+ * */
 char* echo_(char* file_name, char* data){
     file* temp;
     if (file_pointer->file_ != NULL)
@@ -600,6 +664,10 @@ char* echo_(char* file_name, char* data){
         return return_string_helper1("No such file.");
     } 
 }
+/**
+ * As in Linux, cat allows us to watch the content of a certain file inside a directory by
+ * giving the file name.
+ * */
 char* cat_(char* file_name){
     file* temp;
     if (file_pointer->file_ != NULL)
@@ -633,6 +701,9 @@ char* cat_(char* file_name){
     }
     
 }
+/**
+ * As in Linux, chown allows us to change the owner of a file.
+ * */
 char* chown_(char* owner, char* file_name){
     char* owner_;
     owner_ = return_string_helper1(owner);
@@ -666,6 +737,10 @@ char* chown_(char* owner, char* file_name){
         return return_string_helper1("Can not reassign inexisting file.");
     }
 }
+/**
+ * The set of functions: trace_file_system, trace_file_aux, and trace son
+ * are made for iterate over the tree in order to get the info of the entire B-Tree.
+ * */
 void trace_file_system(void){
     file_system* temp = root;
     if (root != NULL)
@@ -744,6 +819,7 @@ char* return_directories(void){
 //----------------------File system--------------------------------------
 
 //----------------------------Linked list------------------------------
+//Those functions are a set of basic methods about add, delet, rename nodes of linked list.
 void add_node(char* name){
     // If the head is null, so we have to reserve memory for this first element:
     if (head == NULL)
@@ -875,6 +951,9 @@ int delete_in(int index){
     return 0;
 }
 //---------------Linked list---------------------------------
+/**
+ * This is an auxiliar function that determines if two strings are equal or not.
+ * */
 int compare_strings1(char* str1, char* str2){
     int len1 = strlen(str1);
     int len2 = strlen(str2);
@@ -895,6 +974,10 @@ int compare_strings1(char* str1, char* str2){
         return 0;
     }
 }
+/**
+ * This function helps to do a correct string return just only passign the string we want 
+ * to return.
+ * */
 char* return_string_helper1(char* string_to_return){
     int len = strlen(string_to_return);
     char *string_r = (char *)malloc(sizeof(char)*len);
