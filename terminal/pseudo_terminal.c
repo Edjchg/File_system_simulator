@@ -5,9 +5,13 @@
 
 
 //gcc pseudo_terminal.c -o pseudo_terminal $(pkg-config --cflags --libs gtk+-3.0)
-
+//A helpfull tutorial about GTK:
 //https://www.youtube.com/watch?v=RYnFJg5yjl4&list=PL1xeVkd9tTFijBKZuWi9Ozw63ZuMZAOZ1&index=71
 
+/**
+ * This function helps to do a correct return of strings by passing the string we want to 
+ * return.
+ * */
 char* return_string_helper(char* string_to_return){
     int len = strlen(string_to_return);
     char *string_r = (char *)malloc(sizeof(char)*len);
@@ -21,7 +25,9 @@ char* return_string_helper(char* string_to_return){
     string_r[counter] = '\0';
     return string_r;
 }
-
+/**
+ * This is an auxiliary function that determines if two strings are equal or not.
+ * */
 int compare_strings(char* str1, char* str2){
     int len1 = strlen(str1);
     int len2 = strlen(str2);
@@ -42,6 +48,11 @@ int compare_strings(char* str1, char* str2){
         return 0;
     }
 }
+/**
+ * This function get the instruction an determines what Linux command is executed from
+ * the user. Argument and argument2 are required for commands that are composed by more
+ * than just only theri names.
+ * */
 char* interpret_command(char* instruction, char* argument, char* argument2){
     char* out_put = " ";
     if (compare_strings(instruction, "mkdir"))
@@ -167,6 +178,9 @@ char* interpret_command(char* instruction, char* argument, char* argument2){
     }
   
 }
+/**
+ * This function takes plain text and divide it into instruction, argument1 and argument2.
+ * */
 char* parse_command(gchar* command){
     char* comm = (char*)command;
     int len = strlen(command) - 1;
@@ -269,7 +283,9 @@ char* parse_command(gchar* command){
 
     
 }
-
+/**
+ * This method takes text from the entry widget an obtain it for posterior processing.
+ * */
 static void insert_text(GtkButton *button, Widgets *wid){
     GtkTextBuffer *buffer;
     GtkTextMark *mark;
@@ -310,14 +326,18 @@ static void get_text(GtkButton *button, Widgets *wid){
     //.
     g_print("%s\n", text);
 }
-
+/**
+ * This function is executed when we want to close the terminal
+ * */
 static void cerrar()
 {
     tree_parser_wr(export_root());
     printf("Cerrando \n");
     gtk_main_quit();
 }
-
+/**
+ * This function takes all the GTK environment and set it.
+ * */
 int init_gtk(int argc, char* argv[]){
     GtkWidget *window, *scrolled_window, *hbox, *vbox, *insert, *retrieve;
 
